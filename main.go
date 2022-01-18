@@ -12,6 +12,7 @@ import (
 
 func main() {
 	global.Viper = initServe.InitConfig()
-	initServe.InitDb()
+	db := initServe.InitDb()
+	defer db.Close()
 
 }

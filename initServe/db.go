@@ -1,6 +1,7 @@
 package initServe
 
 import (
+	"database/sql"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -10,7 +11,7 @@ import (
 	"time"
 )
 
-func InitDb() {
+func InitDb() *sql.DB {
 	dbConfig := global.System.Db
 	dsn := fmt.Sprintf("%s:%s@(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		dbConfig.User,
@@ -45,9 +46,15 @@ func InitDb() {
 		panic(fmt.Errorf("连接数据库失败:%s", err))
 	}
 
-	sql, _ := db.DB()
-	sql.SetMaxIdleConns(10)
-	sql.SetMaxOpenConns(100)
-	sql.SetConnMaxLifetime(10 * time.Second)
+	// 加 model
+	//db.AutoMigrate()
 
+	// 设置其他引擎
+	//db.Set("gorm:table_options","ENGINE=MyIsAm").AutoMigrate()
+
+	sqlDb, _ := db.DB()
+	sqlDb.SetMaxIdleConns(10)
+	sqlDb.SetMaxOpenConns(100)
+	sqlDb.SetConnMaxLifetime(10 * time.Second)
+	return sqlDb
 }
