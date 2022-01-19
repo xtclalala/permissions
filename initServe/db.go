@@ -1,17 +1,20 @@
 package initServe
 
 import (
-	"database/sql"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"permissions/global"
+	"permissions/model"
 	"time"
 )
 
-func InitDb() *sql.DB {
+var db *gorm.DB
+var err error
+
+func InitDb() *gorm.DB {
 	dbConfig := global.System.Db
 	dsn := fmt.Sprintf("%s:%s@(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		dbConfig.User,
@@ -41,20 +44,27 @@ func InitDb() *sql.DB {
 		SkipDefaultTransaction: true,
 		NamingStrategy:         name,
 	}
-	db, err := gorm.Open(mysql.New(mysqlConfig), &gormConfig)
+	db, err = gorm.Open(mysql.New(mysqlConfig), &gormConfig)
 	if err != nil {
 		panic(fmt.Errorf("连接数据库失败:%s", err))
 	}
 
-	// 加 model
-	//db.AutoMigrate()
-
-	// 设置其他引擎
-	//db.Set("gorm:table_options","ENGINE=MyIsAm").AutoMigrate()
+	err = db.AutoMigrate(&model.SysUser{}, &model.SysRole{})
+	if err != nil {
+		panic(fmt.Errorf("注册表格失败", err))
+	}
 
 	sqlDb, _ := db.DB()
 	sqlDb.SetMaxIdleConns(10)
 	sqlDb.SetMaxOpenConns(100)
 	sqlDb.SetConnMaxLifetime(10 * time.Second)
-	return sqlDb
+	return db
+}
+
+func InitTables(db *gorm.DB) {
+	// 加 model
+
+	// 设置其他引擎
+	//db.Set("gorm:table_options","ENGINE=MyIsAm").AutoMigrate()
+	fmt.Println("表格注册成功")
 }

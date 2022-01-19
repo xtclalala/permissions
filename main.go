@@ -6,6 +6,7 @@ package main
 //go:generate go mod download
 
 import (
+	"gorm.io/gorm"
 	"permissions/global"
 	"permissions/initServe"
 )
@@ -13,6 +14,15 @@ import (
 func main() {
 	global.Viper = initServe.InitConfig()
 	db := initServe.InitDb()
-	defer db.Close()
+	if db != nil {
+		initServe.InitTables(db)
+
+		defer func(db *gorm.DB) {
+			sqlDb, err := db.DB()
+			if err != nil {
+				sqlDb.Close()
+			}
+		}(db)
+	}
 
 }
