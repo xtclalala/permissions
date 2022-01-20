@@ -49,11 +49,6 @@ func InitDb() *gorm.DB {
 		panic(fmt.Errorf("连接数据库失败:%s", err))
 	}
 
-	err = db.AutoMigrate(&model.SysUser{}, &model.SysRole{})
-	if err != nil {
-		panic(fmt.Errorf("注册表格失败", err))
-	}
-
 	sqlDb, _ := db.DB()
 	sqlDb.SetMaxIdleConns(10)
 	sqlDb.SetMaxOpenConns(100)
@@ -63,7 +58,10 @@ func InitDb() *gorm.DB {
 
 func InitTables(db *gorm.DB) {
 	// 加 model
-
+	err = db.AutoMigrate(&model.SysUser{}, &model.SysRole{}, &model.SysMenu{}, &model.SysPermission{})
+	if err != nil {
+		panic(fmt.Errorf("注册表格失败", err))
+	}
 	// 设置其他引擎
 	//db.Set("gorm:table_options","ENGINE=MyIsAm").AutoMigrate()
 	fmt.Println("表格注册成功")

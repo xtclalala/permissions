@@ -7,17 +7,31 @@ import (
 )
 
 type CRUD struct {
-	CreateTime time.Time      `gorm:"autoCreateTime:milli"`
-	UpdateTime time.Time      `gorm:"autoUpdateTime:milli"`
-	Deleted    gorm.DeletedAt `gorm:"index" json:"deleted"`
+	CreateTime time.Time
+	UpdateTime time.Time
 }
 
-type baseUUID struct {
-	Id uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
+func (crud *CRUD) BeforeCreate(tx *gorm.DB) (err error) {
+	crud.CreateTime = time.Now()
+	return
+}
+
+func (crud *CRUD) AfterUpdate(tx *gorm.DB) (err error) {
+	crud.UpdateTime = time.Now()
+	return
+}
+
+type BaseUUID struct {
+	ID uuid.UUID `json:"id" gorm:"type:varchar(36);primary_key"`
 	CRUD
 }
 
-type baseID struct {
-	Id uint `gorm:"primary_key"`
+func (bUuid *BaseUUID) BeforeCreate(tx *gorm.DB) (err error) {
+	bUuid.ID = uuid.New()
+	return
+}
+
+type BaseID struct {
+	ID uint `gorm:"primary_key"`
 	CRUD
 }
