@@ -11,9 +11,11 @@ type SysMenu struct {
 	Component string `json:"component" gorm:"comment:前端文件路径"`
 	Sort      int    `json:"sort" gorm:"default:100;comment:排序"`
 	Mate
-	SysRoles []*SysRole `json:"roles" gorm:"many2many:m2m_role_menu;"`
-	Children []SysMenu  `json:"children" gorm:"-"`
+	SysPermissions []SysPermission `json:"permissions" gorm:"foreignKey:SysMenuId"`
+	SysRoles       []*SysRole      `json:"roles" gorm:"many2many:m2m_role_menu;"`
+	Children       []SysMenu       `json:"children" gorm:"-"`
 }
 
 type Mate struct {
+	Icon string `json:"icon" gorm:"comment:图标"`
 }
