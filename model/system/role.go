@@ -10,5 +10,6 @@ type SysRole struct {
 	SysUsers       []*SysUser       `json:"users" gorm:"many2many:m2m_user_role;"`
 	SysMenus       []*SysMenu       `json:"menus" gorm:"many2many:m2m_role_menu;"`
 	SysPermissions []*SysPermission `json:"permissions" gorm:"many2many:m2m_role_permission;"`
+	SysOrganizes   []*SysOrganize   `json:"organizes" gorm:"many2many:m2m_organize_role"`
 	Children       []SysRole        `json:"children" gorm:"-"`
 }
