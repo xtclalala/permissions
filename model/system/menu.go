@@ -1,7 +1,9 @@
-package model
+package system
+
+import "permissions/model"
 
 type SysMenu struct {
-	BaseID
+	model.BaseID
 	Pid       uint   `json:"pid" gorm:"comment:父菜单id"`
 	Name      string `json:"name" gorm:"comment:路由name;"`
 	Path      string `json:"path" gorm:"comment:路由path;"`

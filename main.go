@@ -12,16 +12,16 @@ import (
 
 func main() {
 	global.Viper = initServe.InitConfig()
-	db := initServe.InitDb()
-	if db != nil {
-		initServe.InitTables(db)
+	global.Db = initServe.InitDb()
+	if global.Db != nil {
+		initServe.InitTables(global.Db)
 
 		defer func(db *gorm.DB) {
 			sqlDb, err := db.DB()
 			if err != nil {
 				sqlDb.Close()
 			}
-		}(db)
+		}(global.Db)
 	}
 
 }

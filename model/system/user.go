@@ -1,7 +1,9 @@
-package model
+package system
+
+import "permissions/model"
 
 type SysUser struct {
-	BaseUUID
+	model.BaseUUID
 	Username  string     `json:"username" gorm:"type:string;size:35;not null"`
 	LoginName string     `json:"loginName" gorm:"type:string;size:50;unique;not null"`
 	Password  string     `json:"password" gorm:"not null;"`

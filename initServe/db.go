@@ -7,12 +7,9 @@ import (
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"permissions/global"
-	"permissions/model"
+	"permissions/model/system"
 	"time"
 )
-
-var db *gorm.DB
-var err error
 
 func InitDb() *gorm.DB {
 	dbConfig := global.System.Db
@@ -44,7 +41,7 @@ func InitDb() *gorm.DB {
 		SkipDefaultTransaction: true,
 		NamingStrategy:         name,
 	}
-	db, err = gorm.Open(mysql.New(mysqlConfig), &gormConfig)
+	db, err := gorm.Open(mysql.New(mysqlConfig), &gormConfig)
 	if err != nil {
 		panic(fmt.Errorf("连接数据库失败:%s", err))
 	}
@@ -58,7 +55,7 @@ func InitDb() *gorm.DB {
 
 func InitTables(db *gorm.DB) {
 	// 加 model
-	err = db.AutoMigrate(&model.SysUser{}, &model.SysRole{}, &model.SysMenu{}, &model.SysPermission{})
+	err := db.AutoMigrate(&system.SysUser{}, &system.SysRole{}, &system.SysMenu{}, &system.SysPermission{})
 	if err != nil {
 		panic(fmt.Errorf("注册表格失败", err))
 	}
