@@ -1,10 +1,9 @@
-package common
+package dto
 
 type BasePage struct {
-	Page     int    `json:"page"`
-	PageSize int    `json:"pageSize"`
-	Order    string `json:"order"`
-	Desc     bool   `json:"desc"`
+	Page     int  `json:"page"`
+	PageSize int  `json:"pageSize"`
+	Desc     bool `json:"desc"`
 }
 
 func (s *BasePage) GetPage() (page int) {

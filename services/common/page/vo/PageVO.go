@@ -1,4 +1,4 @@
-package common
+package vo
 
 type PageVO struct {
 	Items interface{}
