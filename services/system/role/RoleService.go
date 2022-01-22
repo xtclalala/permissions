@@ -84,3 +84,9 @@ func (s *RoleService) GetById(id uint) (err error, do system.SysRole) {
 	err = global.Db.Where("id = ?", id).First(&do).Error
 	return
 }
+
+// GetById 根据 id 查角色
+func (s *RoleService) GetRoleByOrg(org system.SysOrganize) (err error, roles []system.SysRole) {
+	err = global.Db.Model(&org).Association("").Find(&roles)
+	return
+}

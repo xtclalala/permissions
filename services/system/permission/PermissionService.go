@@ -91,3 +91,9 @@ func (s *PermissionService) GetBySysMenuId(sysMenuId uint) (err error, dos []sys
 	err = global.Db.Where("sys_menu_id = ?", sysMenuId).Find(&dos).Error
 	return
 }
+
+// GetPerByMenuId 根据 菜单id 查 按钮
+func (s *PermissionService) GetPerByMenuId(menuId uint) (err error, pers []system.SysPermission) {
+	err = global.Db.Where("sys_menu_id = ?", menuId).Find(&pers).Error
+	return
+}
