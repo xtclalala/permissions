@@ -1,12 +1,12 @@
 package conf
 
 type Config struct {
-	App *App `mapstructure:"app" yaml:"app"`
-	Db  *Db  `mapstructure:"db"  yaml:"db"`
+	App    *App    `mapstructure:"app" yaml:"app"`
+	Db     *Db     `mapstructure:"db"  yaml:"db"`
+	Logger *Logger `mapstructure:"logger"  yaml:"logger"`
 }
 
 type App struct {
-	Host string `mapstructure:"host" yaml:"host"`
 	Port string `mapstructure:"port" yaml:"port"`
 }
 
@@ -17,4 +17,9 @@ type Db struct {
 	User   string `mapstructure:"user" yaml:"user"`
 	Passwd string `mapstructure:"passwd" yaml:"passwd"`
 	DbName string `mapstructure:"dbName" yaml:"dbName"`
+}
+
+type Logger struct {
+	FilePath string `mapstructure:"filePath" yaml:"filePath"`
+	FileName string `mapstructure:"fileName" yaml:"fileName"`
 }

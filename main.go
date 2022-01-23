@@ -5,11 +5,9 @@ package main
 //go:generate go mod download
 
 import (
-	"fmt"
 	"gorm.io/gorm"
 	"permissions/global"
 	"permissions/initServe"
-	"permissions/model/system"
 )
 
 func main() {
@@ -25,6 +23,7 @@ func main() {
 			}
 		}(global.Db)
 	}
+	//initServe.RunWindowServer()
 
 	// 可以分开创建数据 再绑定关联 用Save
 	// 一张有数据 另一张没数据 可以在创建的同时关联 用Create
@@ -45,5 +44,5 @@ func main() {
 	//var menu system.SysMenu
 	//err := global.Db.Where(&system.M2mRolePermission{SysPermissionId: 2}).Delete(&system.M2mRolePermission{}).Error
 	//err := global.Db.(&p).Error
-	fmt.Println(err)
+	//fmt.Println(err)
 }

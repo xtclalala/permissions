@@ -1,4 +1,4 @@
-package dto
+package common
 
 type BasePage struct {
 	Page     int  `json:"page"`
@@ -18,4 +18,9 @@ func (s *BasePage) GetOffset() (offset int) {
 	page := s.GetPage()
 	offset = page * s.PageSize
 	return
+}
+
+type PageVO struct {
+	Items interface{}
+	Total int
 }

@@ -1,4 +1,4 @@
-package organize
+package system
 
 import (
 	"errors"
@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"permissions/global"
+	"permissions/model/common"
 	"permissions/model/system"
 )
 
@@ -100,4 +101,17 @@ func (s *OrganizeService) GetOrgByUserId(userId uuid.UUID) (err error, orgs []sy
 		orgs = append(orgs, org)
 	}
 	return
+}
+
+type SearchMenu struct {
+	common.BasePage
+	Menu
+}
+
+type Menu struct {
+	Pid       uint   `json:"pid"`
+	Name      string `json:"name"`
+	Path      string `json:"path"`
+	Hidden    bool   `json:"hidden"`
+	Component string `json:"component"`
 }
