@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"permissions/global"
@@ -21,8 +22,8 @@ func (s *UserService) Register(dto system.SysUser) (err error) {
 	return
 }
 
-// Update 更新用户
-func (s *UserService) Update(dto system.SysUser) (err error) {
+// UpdateUserInfo 更新用户信息
+func (s *UserService) UpdateUserInfo(dto system.SysUser) (err error) {
 	var old system.SysUser
 	err = global.Db.Where("id = ?", dto.ID).Find(&old).Error
 	if err != nil {
@@ -35,6 +36,48 @@ func (s *UserService) Update(dto system.SysUser) (err error) {
 	}
 	err = global.Db.Save(dto).Error
 	return
+}
+
+// SetRole 设置用户权限 角色
+func (s *UserService) SetUserRole(userId uuid.UUID, roleIds []uint) error {
+	return global.Db.Transaction(func(tx *gorm.DB) error {
+		// 删除原角色
+		if err := tx.Where(&system.M2mUserRole{SysUserId: userId}).Delete(&system.M2mUserRole{}).Error; err != nil {
+			return err
+		}
+		m2mUserRoles := []system.M2mUserRole{}
+		for _, roleId := range roleIds {
+			m2mUserRoles = append(m2mUserRoles, system.M2mUserRole{
+				SysUserId: userId,
+				SysRoleId: roleId,
+			})
+		}
+		if err := tx.Create(&m2mUserRoles).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+}
+
+// SetOrg 设置用户权限 组织
+func (s *UserService) SetUserOrg(userId uuid.UUID, OrgIds []uint) error {
+	return global.Db.Transaction(func(tx *gorm.DB) error {
+		// 删除原组织
+		if err := tx.Where(&system.M2mUserOrganize{SysUserId: userId}).Delete(&system.M2mUserOrganize{}).Error; err != nil {
+			return err
+		}
+		m2mUserOrgs := []system.M2mUserOrganize{}
+		for _, orgId := range OrgIds {
+			m2mUserOrgs = append(m2mUserOrgs, system.M2mUserOrganize{
+				SysUserId:     userId,
+				SysOrganizeId: orgId,
+			})
+		}
+		if err := tx.Create(&m2mUserOrgs).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }
 
 // Search 搜索用户
@@ -80,7 +123,39 @@ func (s *UserService) GetAll() (err error, dos []system.SysUser) {
 }
 
 // GetById 根据 id 查用户
-func (s *UserService) GetById(id uint) (err error, do system.SysUser) {
+func (s *UserService) GetById(id uuid.UUID) (err error, do system.SysUser) {
 	err = global.Db.Where("id = ?", id).First(&do).Error
+	return
+}
+
+// GetUserByRoleId 根据 角色id 查用户
+func (s *UserService) GetUserByRoleId(roleId uint) (err error, users []system.SysUser) {
+	rows, err := global.Db.Where(&system.M2mUserRole{SysRoleId: roleId}).Rows()
+	defer rows.Close()
+	if err != nil {
+		return err, users
+	}
+	for rows.Next() {
+		var userRole system.M2mUserRole
+		global.Db.ScanRows(rows, &userRole)
+		_, user := s.GetById(userRole.SysUserId)
+		users = append(users, user)
+	}
+	return
+}
+
+// GetUserByOrgId 根据 组织id 查用户
+func (s *UserService) GetUserByOrgId(orgId uint) (err error, users []system.SysUser) {
+	rows, err := global.Db.Where(&system.M2mUserOrganize{SysOrganizeId: orgId}).Rows()
+	defer rows.Close()
+	if err != nil {
+		return err, users
+	}
+	for rows.Next() {
+		var userRole system.M2mUserRole
+		global.Db.ScanRows(rows, &userRole)
+		_, user := s.GetById(userRole.SysUserId)
+		users = append(users, user)
+	}
 	return
 }

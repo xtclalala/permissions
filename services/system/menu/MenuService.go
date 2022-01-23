@@ -98,3 +98,19 @@ func (s *MenuService) GetById(id uint) (err error, do system.SysMenu) {
 	err = global.Db.Where("id = ?", id).First(&do).Error
 	return
 }
+
+// GetMenuByRole 根据 角色id 查菜单
+func (s *MenuService) GetMenuByRoleId(roleId uint) (err error, menus []system.SysMenu) {
+	rows, err := global.Db.Where(&system.M2mRoleMenu{SysRoleId: roleId}).Rows()
+	defer rows.Close()
+	if err != nil {
+		return err, menus
+	}
+	for rows.Next() {
+		var roleMenu system.M2mRoleMenu
+		global.Db.ScanRows(rows, &roleMenu)
+		_, menu := s.GetById(roleMenu.SysMenuId)
+		menus = append(menus, menu)
+	}
+	return
+}

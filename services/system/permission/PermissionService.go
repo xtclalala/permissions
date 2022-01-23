@@ -97,3 +97,19 @@ func (s *PermissionService) GetPerByMenuId(menuId uint) (err error, pers []syste
 	err = global.Db.Where("sys_menu_id = ?", menuId).Find(&pers).Error
 	return
 }
+
+// GetPerByRole 根据 角色id 查按钮
+func (s *PermissionService) GetPerByRoleId(roleId uint) (err error, pers []system.SysPermission) {
+	rows, err := global.Db.Where(&system.M2mRolePermission{SysRoleId: roleId}).Rows()
+	defer rows.Close()
+	if err != nil {
+		return err, pers
+	}
+	for rows.Next() {
+		var rolePer system.M2mRolePermission
+		global.Db.ScanRows(rows, &rolePer)
+		_, per := s.GetById(rolePer.SysPermissionId)
+		pers = append(pers, per)
+	}
+	return
+}

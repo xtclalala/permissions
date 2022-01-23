@@ -2,6 +2,7 @@ package organize
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"permissions/global"
@@ -82,5 +83,21 @@ func (s *OrganizeService) GetAll() (err error, dos []system.SysOrganize) {
 // GetById 根据 id 查组织
 func (s *OrganizeService) GetById(id uint) (err error, do system.SysOrganize) {
 	err = global.Db.Where("id = ?", id).First(&do).Error
+	return
+}
+
+// GetOrgByUserId 根据 用户id 查组织
+func (s *OrganizeService) GetOrgByUserId(userId uuid.UUID) (err error, orgs []system.SysOrganize) {
+	rows, err := global.Db.Where(&system.M2mUserOrganize{}, userId).Rows()
+	defer rows.Close()
+	if err != nil {
+		return err, orgs
+	}
+	for rows.Next() {
+		var userOrg system.M2mUserOrganize
+		global.Db.ScanRows(rows, &userOrg)
+		_, org := s.GetById(userOrg.SysOrganizeId)
+		orgs = append(orgs, org)
+	}
 	return
 }

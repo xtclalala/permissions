@@ -5,9 +5,11 @@ package main
 //go:generate go mod download
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"permissions/global"
 	"permissions/initServe"
+	"permissions/model/system"
 )
 
 func main() {
@@ -27,11 +29,11 @@ func main() {
 	// 可以分开创建数据 再绑定关联 用Save
 	// 一张有数据 另一张没数据 可以在创建的同时关联 用Create
 	//p := system.SysPermission{
-	//	BaseID: model.BaseID{
-	//		ID: 1,
+	//	BaseID:model.BaseID{
+	//		2,
 	//	},
-	//	Name: "qaz",
-	//	Sort: 1,
+	//	Name: "cecece2",
+	//	Sort: 2,
 	//}
 	//p2 := system.SysPermission{
 	//	BaseID: model.BaseID{
@@ -41,7 +43,7 @@ func main() {
 	//	Sort: 2,
 	//}
 	//var menu system.SysMenu
-	//global.Db.Where("id = ?", 2).Find(&menu)
-	//err := global.Db.Model(&menu).Association("SysPermissions").Append([]system.SysPermission{p, p2})
-	//fmt.Println(err)
+	//err := global.Db.Where(&system.M2mRolePermission{SysPermissionId: 2}).Delete(&system.M2mRolePermission{}).Error
+	//err := global.Db.(&p).Error
+	fmt.Println(err)
 }
