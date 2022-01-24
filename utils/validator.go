@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"github.com/go-playground/locales/zh_Hans_CN"
 	unTrans "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
@@ -8,7 +9,8 @@ import (
 	"reflect"
 )
 
-func Validate(data interface{}) (string, int) {
+// Validate 验证字段，结构体内的结构体属性也会被验证
+func Validate(data interface{}) (error, int) {
 	validate := validator.New()
 	uni := unTrans.New(zh_Hans_CN.New())
 	trans, _ := uni.GetTranslator("zh_Hans_CN")
@@ -22,8 +24,8 @@ func Validate(data interface{}) (string, int) {
 	err := validate.Struct(data)
 	if err != nil {
 		for _, v := range err.(validator.ValidationErrors) {
-			return v.Translate(trans), ERROR
+			return errors.New(v.Translate(trans)), ERROR
 		}
 	}
-	return "", SUCCESS
+	return errors.New(""), SUCCESS
 }

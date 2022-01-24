@@ -40,7 +40,7 @@ func (s *OrganizeService) Update(dto system.SysOrganize) (err error) {
 }
 
 // Search 搜索组织
-func (s *OrganizeService) Search(dto SearchOrganize) (err error, list []system.SysOrganize, total int64) {
+func (s *OrganizeService) Search(dto system.SearchOrganize) (err error, list []system.SysOrganize, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system.SysOrganize{})

@@ -14,7 +14,7 @@ type UserService struct{}
 var AppUserService = new(UserService)
 
 // Register 注册用户
-func (s *UserService) Register(dto system.SysUser) (err error) {
+func (s *UserService) Register(dto *system.SysUser) (err error) {
 	if errors.Is(s.CheckRepeat(dto.LoginName), gorm.ErrRecordNotFound) {
 		return errors.New("已被注册")
 	}
@@ -81,7 +81,7 @@ func (s *UserService) SetUserOrg(userId uuid.UUID, OrgIds []uint) error {
 }
 
 // Search 搜索用户
-func (s *UserService) Search(dto SearchUser) (err error, list []system.SysUser, total int64) {
+func (s *UserService) Search(dto system.SearchUser) (err error, list []system.SysUser, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system.SysUser{})

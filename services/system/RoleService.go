@@ -80,7 +80,7 @@ func (s *RoleService) SetRolePer(roleId uint, perIds []uint) (err error) {
 }
 
 // Search 搜索角色
-func (s *RoleService) Search(dto SearchRole) (err error, list []system.SysRole, total int64) {
+func (s *RoleService) Search(dto system.SearchRole) (err error, list []system.SysRole, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system.SysRole{})

@@ -7,31 +7,39 @@ import (
 )
 
 type Response struct {
-	Code    int         `json:"code"`
+	Status  int         `json:"status"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
 
-func Result(code int, data interface{}, c *gin.Context) {
+func Result(status int, data interface{}, msg string, c *gin.Context) {
 	c.JSON(http.StatusOK, Response{
-		Code:    code,
+		Status:  status,
 		Data:    data,
-		Message: utils.GetErrorMessage(code),
+		Message: msg,
 	})
 }
 
 func Ok(c *gin.Context) {
-	Result(utils.SUCCESS, map[string]interface{}{}, c)
+	Result(utils.SUCCESS, map[string]interface{}{}, utils.GetErrorMessage(utils.SUCCESS), c)
+}
+
+func OkWithMessage(msg string, c *gin.Context) {
+	Result(utils.SUCCESS, map[string]interface{}{}, msg, c)
 }
 
 func OkWithData(data interface{}, c *gin.Context) {
-	Result(utils.SUCCESS, data, c)
+	Result(utils.SUCCESS, data, "", c)
 }
 
-func Fail(c *gin.Context) {
-	Result(utils.ERROR, map[string]interface{}{}, c)
+func FailWithMessage(msg string, c *gin.Context) {
+	Result(utils.ERROR, map[string]interface{}{}, msg, c)
 }
 
-func FailWhitMessage(code int, c *gin.Context) {
-	Result(code, map[string]interface{}{}, c)
+func FailWhitStatusAndMessage(status int, msg string, c *gin.Context) {
+	Result(status, map[string]interface{}{}, msg, c)
+}
+
+func FailWhitStatus(status int, c *gin.Context) {
+	Result(status, map[string]interface{}{}, utils.GetErrorMessage(status), c)
 }

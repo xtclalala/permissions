@@ -3,6 +3,7 @@ package system
 import "permissions/services"
 
 type SysApiGroup struct {
+	userApi
 }
 
 var menuService = services.ServiceGroupApp.SysServiceGroup.MenuService

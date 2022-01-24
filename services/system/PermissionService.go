@@ -39,7 +39,7 @@ func (s *PermissionService) Update(dto system.SysPermission) (err error) {
 }
 
 // Search 搜索菜单
-func (s *PermissionService) Search(dto SearchPermission) (err error, list []system.SysPermission, total int64) {
+func (s *PermissionService) Search(dto system.SearchPermission) (err error, list []system.SysPermission, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system.SysPermission{})
