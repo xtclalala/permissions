@@ -38,14 +38,25 @@ func (s *UserService) UpdateUserInfo(dto system.SysUser) (err error) {
 	return
 }
 
-// SetRole 设置用户权限 角色
-func (s *UserService) SetUserRole(userId uuid.UUID, roleIds []uint) error {
+// SetUserRoleAndOrg 设置用户权限 角色 组织
+func (s *UserService) SetUserRoleAndOrg(userId uuid.UUID, roleIds []uint, orgIds []uint) error {
 	return global.Db.Transaction(func(tx *gorm.DB) error {
 		// 删除原角色
 		if err := tx.Where(&system.M2mUserRole{SysUserId: userId}).Delete(&system.M2mUserRole{}).Error; err != nil {
 			return err
 		}
+		if err := tx.Where(&system.M2mUserOrganize{SysUserId: userId}).Delete(&system.M2mUserOrganize{}).Error; err != nil {
+			return err
+		}
+
+		m2mUserOrgs := []system.M2mUserOrganize{}
 		m2mUserRoles := []system.M2mUserRole{}
+		for _, orgId := range orgIds {
+			m2mUserOrgs = append(m2mUserOrgs, system.M2mUserOrganize{
+				SysUserId:     userId,
+				SysOrganizeId: orgId,
+			})
+		}
 		for _, roleId := range roleIds {
 			m2mUserRoles = append(m2mUserRoles, system.M2mUserRole{
 				SysUserId: userId,
@@ -54,24 +65,6 @@ func (s *UserService) SetUserRole(userId uuid.UUID, roleIds []uint) error {
 		}
 		if err := tx.Create(&m2mUserRoles).Error; err != nil {
 			return err
-		}
-		return nil
-	})
-}
-
-// SetOrg 设置用户权限 组织
-func (s *UserService) SetUserOrg(userId uuid.UUID, OrgIds []uint) error {
-	return global.Db.Transaction(func(tx *gorm.DB) error {
-		// 删除原组织
-		if err := tx.Where(&system.M2mUserOrganize{SysUserId: userId}).Delete(&system.M2mUserOrganize{}).Error; err != nil {
-			return err
-		}
-		m2mUserOrgs := []system.M2mUserOrganize{}
-		for _, orgId := range OrgIds {
-			m2mUserOrgs = append(m2mUserOrgs, system.M2mUserOrganize{
-				SysUserId:     userId,
-				SysOrganizeId: orgId,
-			})
 		}
 		if err := tx.Create(&m2mUserOrgs).Error; err != nil {
 			return err
@@ -158,4 +151,13 @@ func (s *UserService) GetUserByOrgId(orgId uint) (err error, users []system.SysU
 		users = append(users, user)
 	}
 	return
+}
+
+// GetUserByLoginName 根据账号查用户
+func (s *UserService) GetUserByLoginName(loginName string) (error, system.SysUser) {
+	var user system.SysUser
+	if err := global.Db.Where(&system.SysUser{LoginName: loginName}).First(&user).Error; err != nil {
+		return err, user
+	}
+	return nil, user
 }

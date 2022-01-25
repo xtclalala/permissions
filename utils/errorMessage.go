@@ -6,6 +6,9 @@ var (
 
 	// Controller Error
 	ParamsResolveFault = 1001
+
+	// user Error
+	UsernameAndPasswdError = 2001
 )
 
 var codeMsg = map[int]string{
@@ -13,6 +16,8 @@ var codeMsg = map[int]string{
 	ERROR:   "操作失败",
 
 	ParamsResolveFault: "参数解析失败",
+
+	UsernameAndPasswdError: "sys.user.usernameAndPasswdError",
 }
 
 func GetErrorMessage(code int) string {
