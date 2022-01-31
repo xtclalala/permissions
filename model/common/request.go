@@ -1,8 +1,8 @@
 package common
 
 type BasePage struct {
-	Page     int  `json:"page"`
-	PageSize int  `json:"pageSize"`
+	Page     int  `json:"page"      validate:"omitempty,min:0"   label:"页数"`
+	PageSize int  `json:"pageSize"  validate:"omitempty,lt=50"   label:"分页大小"`
 	Desc     bool `json:"desc"`
 }
 
@@ -18,9 +18,4 @@ func (s *BasePage) GetOffset() (offset int) {
 	page := s.GetPage()
 	offset = page * s.PageSize
 	return
-}
-
-type PageVO struct {
-	Items interface{}
-	Total int
 }

@@ -128,8 +128,8 @@ func (s *RoleService) GetById(id uint) (err error, do system.SysRole) {
 }
 
 // GetById 根据 id 查角色
-func (s *RoleService) GetRoleByOrg(org system.SysOrganize) (err error, roles []system.SysRole) {
-	err = global.Db.Model(&org).Association("").Find(&roles)
+func (s *RoleService) GetCompleteInfoById(id uint) (err error, do system.SysRole) {
+	err = global.Db.Preload(clause.Associations).Where("id = ?", id).First(&do).Error
 	return
 }
 
@@ -184,5 +184,10 @@ func (s *RoleService) GetRoleByPerId(perId uint) (err error, roles []system.SysR
 // GetRoleByOrgId 根据 组织id 查角色
 func (s *RoleService) GetRoleByOrgId(orgId uint) (err error, roles []system.SysRole) {
 	err = global.Db.Where(&system.SysRole{SysOrganizeId: orgId}).Find(&roles).Error
+	return
+}
+
+func (s *RoleService) DeleteRole(roleId uint) (err error) {
+	err = global.Db.Where("id = ?", roleId).Delete(&system.SysRole{}).Error
 	return
 }

@@ -57,9 +57,9 @@ func InitTables(db *gorm.DB) {
 	// 加 model
 	err := db.AutoMigrate(&system.SysUser{}, &system.SysRole{}, &system.SysMenu{}, &system.SysPermission{})
 	if err != nil {
-		panic(fmt.Errorf("注册表格失败", err))
+		panic(fmt.Errorf("table of database create failed:", err))
 	}
 	// 设置其他引擎
 	//db.Set("gorm:table_options","ENGINE=MyIsAm").AutoMigrate()
-	fmt.Println("表格注册成功")
+	fmt.Println("table of database create successfully")
 }

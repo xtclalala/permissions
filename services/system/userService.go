@@ -97,8 +97,7 @@ func (s *UserService) Search(dto system.SearchUser) (err error, list []system.Sy
 		Column: clause.Column{Name: "create_time", Raw: true},
 		Desc:   dto.Desc,
 	}
-
-	err = db.Order(oc).Find(&list).Error
+	err = db.Preload(clause.Associations).Order(oc).Find(&list).Error
 	return err, list, total
 }
 
@@ -118,6 +117,12 @@ func (s *UserService) GetAll() (err error, dos []system.SysUser) {
 // GetById 根据 id 查用户
 func (s *UserService) GetById(id uuid.UUID) (err error, do system.SysUser) {
 	err = global.Db.Where("id = ?", id).First(&do).Error
+	return
+}
+
+// GetCompleteInfoById 根据 id 查用户完整信息
+func (s *UserService) GetCompleteInfoById(id uuid.UUID) (err error, do system.SysUser) {
+	err = global.Db.Preload(clause.Associations).Where("id = ?", id).First(&do).Error
 	return
 }
 
@@ -160,4 +165,9 @@ func (s *UserService) GetUserByLoginName(loginName string) (error, system.SysUse
 		return err, user
 	}
 	return nil, user
+}
+
+func (s *UserService) Delete(userId uuid.UUID) (err error) {
+	err = global.Db.Where("Id = ?", userId).Delete(&system.SysUser{}).Error
+	return
 }

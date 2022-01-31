@@ -13,7 +13,7 @@ type PermissionService struct{}
 var AppPermissionService = new(PermissionService)
 
 // Register 注册页面按钮
-func (s *PermissionService) Register(dto system.SysPermission) (err error) {
+func (s *PermissionService) Register(dto *system.SysPermission) (err error) {
 	if errors.Is(s.CheckRepeat(dto.SysMenuId, dto.Name), gorm.ErrRecordNotFound) {
 		return errors.New("已被注册")
 	}
@@ -86,12 +86,6 @@ func (s *PermissionService) GetById(id uint) (err error, do system.SysPermission
 	return
 }
 
-// GetBySysMenuId 根据 SysMenuId 查 页面上的按钮
-func (s *PermissionService) GetBySysMenuId(sysMenuId uint) (err error, dos []system.SysPermission) {
-	err = global.Db.Where("sys_menu_id = ?", sysMenuId).Find(&dos).Error
-	return
-}
-
 // GetPerByMenuId 根据 菜单id 查 按钮
 func (s *PermissionService) GetPerByMenuId(menuId uint) (err error, pers []system.SysPermission) {
 	err = global.Db.Where("sys_menu_id = ?", menuId).Find(&pers).Error
@@ -111,5 +105,19 @@ func (s *PermissionService) GetPerByRoleId(roleId uint) (err error, pers []syste
 		_, per := s.GetById(rolePer.SysPermissionId)
 		pers = append(pers, per)
 	}
+	return
+}
+
+// Ids2Object id转对象
+func (s *PermissionService) Ids2Object(ids []uint) (pers []system.SysPermission) {
+	for _, id := range ids {
+		pers = append(pers, system.SysPermission{BaseID: system.BaseID{ID: id}})
+	}
+	return
+}
+
+// DeletePermission 删除按钮
+func (s *PermissionService) DeletePermission(id uint) (err error) {
+	err = global.Db.Where("id = ?", id).Delete(&system.SysPermission{}).Error
 	return
 }

@@ -13,7 +13,7 @@ type MenuService struct{}
 var AppMenuService = new(MenuService)
 
 // Register 注册页面
-func (s *MenuService) Register(dto system.SysMenu) (err error) {
+func (s *MenuService) Register(dto *system.SysMenu) (err error) {
 	if errors.Is(s.CheckRepeat(dto.Path, dto.Name), gorm.ErrRecordNotFound) {
 		return errors.New("已被注册")
 	}
@@ -38,7 +38,7 @@ func (s *MenuService) Update(dto system.SysMenu) (err error) {
 }
 
 // Search 搜索菜单
-func (s *MenuService) Search(dto SearchMenu) (err error, list []system.SysMenu, total int64) {
+func (s *MenuService) Search(dto system.SearchMenu) (err error, list []system.SysMenu, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system.SysMenu{})
@@ -112,5 +112,18 @@ func (s *MenuService) GetMenuByRoleId(roleId uint) (err error, menus []system.Sy
 		_, menu := s.GetById(roleMenu.SysMenuId)
 		menus = append(menus, menu)
 	}
+	return
+}
+
+// Ids2Object id转对象
+func (s *MenuService) Ids2Object(ids []uint) (menus []system.SysMenu) {
+	for _, id := range ids {
+		menus = append(menus, system.SysMenu{BaseID: system.BaseID{ID: id}})
+	}
+	return
+}
+
+func (s *MenuService) DeleteMenu(id uint) (err error) {
+	err = global.Db.Where("id = ?", id).Delete(&system.SysMenu{}).Error
 	return
 }

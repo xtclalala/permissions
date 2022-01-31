@@ -1,9 +1,7 @@
 package system
 
-import "permissions/model"
-
 type SysPermission struct {
-	model.BaseID
+	BaseID
 	Name string `json:"name" gorm:"not null;"`
 	Sort int    `json:"sort" gorm:"default:100;comment:排序"`
 	// o2m

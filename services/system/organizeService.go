@@ -6,7 +6,6 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"permissions/global"
-	"permissions/model/common"
 	"permissions/model/system"
 )
 
@@ -15,7 +14,7 @@ type OrganizeService struct{}
 var AppOrganizeService = new(OrganizeService)
 
 // Register 注册组织
-func (s *OrganizeService) Register(dto system.SysOrganize) (err error) {
+func (s *OrganizeService) Register(dto *system.SysOrganize) (err error) {
 	if errors.Is(s.CheckRepeat(dto.Pid, dto.Name), gorm.ErrRecordNotFound) {
 		return errors.New("已被注册")
 	}
@@ -24,7 +23,7 @@ func (s *OrganizeService) Register(dto system.SysOrganize) (err error) {
 }
 
 // Update 更新组织
-func (s *OrganizeService) Update(dto system.SysOrganize) (err error) {
+func (s *OrganizeService) Update(dto *system.SysOrganize) (err error) {
 	var old system.SysOrganize
 	err = global.Db.Where("id = ?", dto.ID).Find(&old).Error
 	if err != nil {
@@ -40,7 +39,7 @@ func (s *OrganizeService) Update(dto system.SysOrganize) (err error) {
 }
 
 // Search 搜索组织
-func (s *OrganizeService) Search(dto system.SearchOrganize) (err error, list []system.SysOrganize, total int64) {
+func (s *OrganizeService) Search(dto *system.SearchOrganize) (err error, list []system.SysOrganize, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system.SysOrganize{})
@@ -103,15 +102,7 @@ func (s *OrganizeService) GetOrgByUserId(userId uuid.UUID) (err error, orgs []sy
 	return
 }
 
-type SearchMenu struct {
-	common.BasePage
-	Menu
-}
-
-type Menu struct {
-	Pid       uint   `json:"pid"`
-	Name      string `json:"name"`
-	Path      string `json:"path"`
-	Hidden    bool   `json:"hidden"`
-	Component string `json:"component"`
+func (s *OrganizeService) DeleteOrganize(id uint) (err error) {
+	err = global.Db.Where("id = ?", id).Delete(&system.SysOrganize{}).Error
+	return
 }

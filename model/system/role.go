@@ -1,9 +1,7 @@
 package system
 
-import "permissions/model"
-
 type SysRole struct {
-	model.BaseID
+	BaseID
 	Name string `json:"name" gorm:"not null"`
 	Pid  uint   `json:"pid" gorm:"default:0"`
 	Sort int    `json:"sort" gorm:"not null;"`

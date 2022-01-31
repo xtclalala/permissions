@@ -1,12 +1,18 @@
 app:
-  port: :3000
+  port: ':3000'
+  auth: 'permission-y1t'
 db:
-  type: mysql
-  host: localhost
-  port: 3306
-  user: root
-  passwd: root
-  dbName: permissions
+  type: 'mysql'
+  host: 'localhost'
+  port: '3306'
+  user: 'root'
+  passwd: 'root'
+  dbName: 'permissions'
 logger:
-  name: permissions
-  path: log
+  fileName: 'permissions.log'
+  filePath: 'log'
+jwt:
+  signKey: 'y1t'
+  timeout: '10'
+  iss: 'y1t'
+  bufferTime: '5'

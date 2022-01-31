@@ -23,19 +23,7 @@ func main() {
 			}
 		}(global.Db)
 	}
-	//u := system.User{
-	//	UserBaseInfo: system.UserBaseInfo{
-	//		Username: "12345",
-	//		Password: "1214566",
-	//		LoginName: "12356633",
-	//	},
-	//	SysOrganizeIds: []uint{1},
-	//	SysRoleIds: []uint{1},
-	//}
-	//s, err := utils.Validate(&u)
-	//fmt.Println(s)
-	//fmt.Println(err)
-	//initServe.RunWindowServer()
+	initServe.RunWindowServer()
 
 	// 可以分开创建数据 再绑定关联 用Save
 	// 一张有数据 另一张没数据 可以在创建的同时关联 用Create

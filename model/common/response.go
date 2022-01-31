@@ -47,3 +47,8 @@ func FailWhitStatusAndMessage(status int, msg string, c *gin.Context) {
 func FailWhitStatus(status int, c *gin.Context) {
 	Result(status, map[string]interface{}{}, utils.GetErrorMessage(status), c)
 }
+
+type PageVO struct {
+	Items interface{}
+	Total int64
+}
