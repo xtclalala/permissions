@@ -1,13 +1,13 @@
 app:
   port: ':3000'
-  auth: 'permission-y1t'
+  auth: 'y1t-gov'
 db:
   type: 'mysql'
   host: 'localhost'
   port: '3306'
   user: 'root'
   passwd: 'root'
-  dbName: 'permissions'
+  dbName: 'y1t_gov'
 logger:
   fileName: 'permissions.log'
   filePath: 'log'

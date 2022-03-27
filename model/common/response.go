@@ -7,48 +7,48 @@ import (
 )
 
 type Response struct {
-	Status  int         `json:"status"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Result  any    `json:"result"`
 }
 
-func Result(status int, data interface{}, msg string, c *gin.Context) {
+func Result(status int, data any, msg string, c *gin.Context) {
 	c.JSON(http.StatusOK, Response{
 		Status:  status,
-		Data:    data,
+		Result:  data,
 		Message: msg,
 	})
 }
 
 func Ok(c *gin.Context) {
-	Result(utils.SUCCESS, map[string]interface{}{}, utils.GetErrorMessage(utils.SUCCESS), c)
+	Result(utils.SUCCESS, map[string]any{}, utils.GetErrorMessage(utils.SUCCESS), c)
 }
 
 func OkWithMessage(msg string, c *gin.Context) {
-	Result(utils.SUCCESS, map[string]interface{}{}, msg, c)
+	Result(utils.SUCCESS, map[string]any{}, msg, c)
 }
 
-func OkWithData(data interface{}, c *gin.Context) {
+func OkWithData(data any, c *gin.Context) {
 	Result(utils.SUCCESS, data, "", c)
 }
 
 func Fail(c *gin.Context) {
-	Result(utils.ERROR, map[string]interface{}{}, utils.GetErrorMessage(utils.ERROR), c)
+	Result(utils.ERROR, map[string]any{}, utils.GetErrorMessage(utils.ERROR), c)
 }
 
 func FailWithMessage(msg string, c *gin.Context) {
-	Result(utils.ERROR, map[string]interface{}{}, msg, c)
+	Result(utils.ERROR, map[string]any{}, msg, c)
 }
 
 func FailWhitStatusAndMessage(status int, msg string, c *gin.Context) {
-	Result(status, map[string]interface{}{}, msg, c)
+	Result(status, map[string]any{}, msg, c)
 }
 
 func FailWhitStatus(status int, c *gin.Context) {
-	Result(status, map[string]interface{}{}, utils.GetErrorMessage(status), c)
+	Result(status, map[string]any{}, utils.GetErrorMessage(status), c)
 }
 
 type PageVO struct {
-	Items interface{}
+	Items any
 	Total int64
 }

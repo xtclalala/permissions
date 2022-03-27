@@ -2,7 +2,7 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
-	v1 "permissions/api/v1"
+	"permissions/api/v1"
 )
 
 type MenuRouter struct{}

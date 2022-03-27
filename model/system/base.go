@@ -17,6 +17,7 @@ type BaseUUID struct {
 func (bUuid *BaseUUID) BeforeCreate(tx *gorm.DB) (err error) {
 	bUuid.ID = uuid.New()
 	bUuid.CreateTime = time.Now()
+	bUuid.UpdateTime = time.Now()
 	return
 }
 
@@ -28,5 +29,5 @@ func (bUuid *BaseUUID) AfterUpdate(tx *gorm.DB) (err error) {
 
 // BaseID 自增id模板
 type BaseID struct {
-	ID uint `gorm:"primary_key"`
+	ID int `gorm:"primary_key"`
 }

@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"permissions/global"
-	"permissions/model/system"
+	system2 "permissions/model/system"
 )
 
 type OrganizeService struct{}
@@ -14,7 +14,7 @@ type OrganizeService struct{}
 var AppOrganizeService = new(OrganizeService)
 
 // Register 注册组织
-func (s *OrganizeService) Register(dto *system.SysOrganize) (err error) {
+func (s *OrganizeService) Register(dto *system2.SysOrganize) (err error) {
 	if errors.Is(s.CheckRepeat(dto.Pid, dto.Name), gorm.ErrRecordNotFound) {
 		return errors.New("已被注册")
 	}
@@ -23,8 +23,8 @@ func (s *OrganizeService) Register(dto *system.SysOrganize) (err error) {
 }
 
 // Update 更新组织
-func (s *OrganizeService) Update(dto *system.SysOrganize) (err error) {
-	var old system.SysOrganize
+func (s *OrganizeService) Update(dto *system2.SysOrganize) (err error) {
+	var old system2.SysOrganize
 	err = global.Db.Where("id = ?", dto.ID).Find(&old).Error
 	if err != nil {
 		return errors.New("主键查找错误")
@@ -39,11 +39,11 @@ func (s *OrganizeService) Update(dto *system.SysOrganize) (err error) {
 }
 
 // Search 搜索组织
-func (s *OrganizeService) Search(dto *system.SearchOrganize) (err error, list []system.SysOrganize, total int64) {
+func (s *OrganizeService) Search(dto *system2.SearchOrganize) (err error, list []system2.SysOrganize, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
-	db := global.Db.Model(&system.SysOrganize{})
-	var menus []system.SysOrganize
+	db := global.Db.Model(&system2.SysOrganize{})
+	var menus []system2.SysOrganize
 
 	if dto.Pid != 0 {
 		db = db.Where("pid = ?", dto.Pid)
@@ -68,33 +68,33 @@ func (s *OrganizeService) Search(dto *system.SearchOrganize) (err error, list []
 }
 
 // CheckRepeat 检查 pid 和 name 是否存在
-func (s *OrganizeService) CheckRepeat(pid uint, name string) (err error) {
-	var temp system.SysOrganize
+func (s *OrganizeService) CheckRepeat(pid int, name string) (err error) {
+	var temp system2.SysOrganize
 	err = global.Db.Where("pid = ? and name = ?", pid, name).First(&temp).Error
 	return
 }
 
 // GetAll 查所有组织
-func (s *OrganizeService) GetAll() (err error, dos []system.SysOrganize) {
+func (s *OrganizeService) GetAll() (err error, dos []system2.SysOrganize) {
 	err = global.Db.Find(&dos).Error
 	return
 }
 
 // GetById 根据 id 查组织
-func (s *OrganizeService) GetById(id uint) (err error, do system.SysOrganize) {
+func (s *OrganizeService) GetById(id int) (err error, do system2.SysOrganize) {
 	err = global.Db.Where("id = ?", id).First(&do).Error
 	return
 }
 
 // GetOrgByUserId 根据 用户id 查组织
-func (s *OrganizeService) GetOrgByUserId(userId uuid.UUID) (err error, orgs []system.SysOrganize) {
-	rows, err := global.Db.Where(&system.M2mUserOrganize{}, userId).Rows()
+func (s *OrganizeService) GetOrgByUserId(userId uuid.UUID) (err error, orgs []system2.SysOrganize) {
+	rows, err := global.Db.Table("m2m_user_organize").Where("sys_user_id = ?", userId).Rows()
 	defer rows.Close()
 	if err != nil {
 		return err, orgs
 	}
 	for rows.Next() {
-		var userOrg system.M2mUserOrganize
+		var userOrg system2.M2mUserOrganize
 		global.Db.ScanRows(rows, &userOrg)
 		_, org := s.GetById(userOrg.SysOrganizeId)
 		orgs = append(orgs, org)
@@ -102,7 +102,7 @@ func (s *OrganizeService) GetOrgByUserId(userId uuid.UUID) (err error, orgs []sy
 	return
 }
 
-func (s *OrganizeService) DeleteOrganize(id uint) (err error) {
-	err = global.Db.Where("id = ?", id).Delete(&system.SysOrganize{}).Error
+func (s *OrganizeService) DeleteOrganize(id int) (err error) {
+	err = global.Db.Where("id = ?", id).Delete(&system2.SysOrganize{}).Error
 	return
 }

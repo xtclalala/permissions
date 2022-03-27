@@ -6,7 +6,7 @@ type SysMenu struct {
 	Path      string `json:"path" gorm:"comment:路由path;"`
 	Hidden    bool   `json:"hidden" gorm:"default:true;comment:是否隐藏"`
 	Component string `json:"component" gorm:"comment:前端文件路径"`
-	Pid       uint   `json:"pid" gorm:"comment:父菜单id"`
+	Pid       int    `json:"pid" gorm:"comment:父菜单id"`
 	Sort      int    `json:"sort" gorm:"default:100;comment:排序"`
 	Mate
 	// o2m

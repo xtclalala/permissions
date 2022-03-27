@@ -3,10 +3,10 @@ package system
 type SysRole struct {
 	BaseID
 	Name string `json:"name" gorm:"not null"`
-	Pid  uint   `json:"pid" gorm:"default:0"`
+	Pid  int    `json:"pid" gorm:"default:0"`
 	Sort int    `json:"sort" gorm:"not null;"`
 	// o2m
-	SysOrganizeId uint `json:"organizeId"`
+	SysOrganizeId int `json:"organizeId"`
 	// m2m
 	SysMenus       []SysMenu       `json:"menus" gorm:"many2many:m2m_role_menu;"`
 	SysPermissions []SysPermission `json:"permissions" gorm:"many2many:m2m_role_permission;"`

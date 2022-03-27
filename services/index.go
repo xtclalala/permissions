@@ -1,6 +1,8 @@
 package services
 
-import "permissions/services/system"
+import (
+	"permissions/services/system"
+)
 
 type ServiceGroup struct {
 	SysServiceGroup system.SysServiceGroup

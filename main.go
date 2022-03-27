@@ -7,14 +7,14 @@ package main
 import (
 	"gorm.io/gorm"
 	"permissions/global"
-	"permissions/initServe"
+	initServe2 "permissions/initServe"
 )
 
 func main() {
-	global.Viper = initServe.InitConfig()
-	global.Db = initServe.InitDb()
+	global.Viper = initServe2.InitConfig()
+	global.Db = initServe2.InitDb()
 	if global.Db != nil {
-		initServe.InitTables(global.Db)
+		initServe2.InitTables(global.Db)
 
 		defer func(db *gorm.DB) {
 			sqlDb, err := db.DB()
@@ -23,7 +23,7 @@ func main() {
 			}
 		}(global.Db)
 	}
-	initServe.RunWindowServer()
+	initServe2.RunWindowServer()
 
 	// 可以分开创建数据 再绑定关联 用Save
 	// 一张有数据 另一张没数据 可以在创建的同时关联 用Create

@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"permissions/global"
-	"permissions/model/system"
+	system2 "permissions/model/system"
 )
 
 type MenuService struct{}
@@ -13,7 +13,7 @@ type MenuService struct{}
 var AppMenuService = new(MenuService)
 
 // Register 注册页面
-func (s *MenuService) Register(dto *system.SysMenu) (err error) {
+func (s *MenuService) Register(dto *system2.SysMenu) (err error) {
 	if errors.Is(s.CheckRepeat(dto.Path, dto.Name), gorm.ErrRecordNotFound) {
 		return errors.New("已被注册")
 	}
@@ -22,8 +22,8 @@ func (s *MenuService) Register(dto *system.SysMenu) (err error) {
 }
 
 // Update 更新页面
-func (s *MenuService) Update(dto system.SysMenu) (err error) {
-	var old system.SysMenu
+func (s *MenuService) Update(dto system2.SysMenu) (err error) {
+	var old system2.SysMenu
 	err = global.Db.Where("id = ?", dto.ID).Find(&old).Error
 	if err != nil {
 		return errors.New("主键查找错误")
@@ -38,11 +38,11 @@ func (s *MenuService) Update(dto system.SysMenu) (err error) {
 }
 
 // Search 搜索菜单
-func (s *MenuService) Search(dto system.SearchMenu) (err error, list []system.SysMenu, total int64) {
+func (s *MenuService) Search(dto system2.SearchMenu) (err error, list []system2.SysMenu, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
-	db := global.Db.Model(&system.SysMenu{})
-	var menus []system.SysMenu
+	db := global.Db.Model(&system2.SysMenu{})
+	var menus []system2.SysMenu
 
 	if dto.Pid != 0 {
 		db = db.Where("pid = ?", dto.Pid)
@@ -88,26 +88,26 @@ func (s *MenuService) CheckRepeat(path, name string) (err error) {
 }
 
 // GetAll 查所有页面
-func (s *MenuService) GetAll() (err error, dos []system.SysMenu) {
+func (s *MenuService) GetAll() (err error, dos []system2.SysMenu) {
 	err = global.Db.Find(&dos).Error
 	return
 }
 
 // GetById 根据 id 查页面
-func (s *MenuService) GetById(id uint) (err error, do system.SysMenu) {
+func (s *MenuService) GetById(id int) (err error, do system2.SysMenu) {
 	err = global.Db.Where("id = ?", id).First(&do).Error
 	return
 }
 
 // GetMenuByRole 根据 角色id 查菜单
-func (s *MenuService) GetMenuByRoleId(roleId uint) (err error, menus []system.SysMenu) {
-	rows, err := global.Db.Where(&system.M2mRoleMenu{SysRoleId: roleId}).Rows()
+func (s *MenuService) GetMenuByRoleId(roleId int) (err error, menus []system2.SysMenu) {
+	rows, err := global.Db.Table("m2m_role_menu").Where("sys_role_id = ?", roleId).Rows()
 	defer rows.Close()
 	if err != nil {
 		return err, menus
 	}
 	for rows.Next() {
-		var roleMenu system.M2mRoleMenu
+		var roleMenu system2.M2mRoleMenu
 		global.Db.ScanRows(rows, &roleMenu)
 		_, menu := s.GetById(roleMenu.SysMenuId)
 		menus = append(menus, menu)
@@ -116,14 +116,14 @@ func (s *MenuService) GetMenuByRoleId(roleId uint) (err error, menus []system.Sy
 }
 
 // Ids2Object id转对象
-func (s *MenuService) Ids2Object(ids []uint) (menus []system.SysMenu) {
+func (s *MenuService) Ids2Object(ids []int) (menus []system2.SysMenu) {
 	for _, id := range ids {
-		menus = append(menus, system.SysMenu{BaseID: system.BaseID{ID: id}})
+		menus = append(menus, system2.SysMenu{BaseID: system2.BaseID{ID: id}})
 	}
 	return
 }
 
-func (s *MenuService) DeleteMenu(id uint) (err error) {
-	err = global.Db.Where("id = ?", id).Delete(&system.SysMenu{}).Error
+func (s *MenuService) DeleteMenu(id int) (err error) {
+	err = global.Db.Where("id = ?", id).Delete(&system2.SysMenu{}).Error
 	return
 }

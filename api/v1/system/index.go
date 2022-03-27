@@ -1,6 +1,8 @@
 package system
 
-import "permissions/services"
+import (
+	"permissions/services"
+)
 
 type SysApiGroup struct {
 	UserApi

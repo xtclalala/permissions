@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"permissions/global"
-	"permissions/model/system"
+	system2 "permissions/model/system"
 	"time"
 )
 
@@ -55,7 +55,7 @@ func InitDb() *gorm.DB {
 
 func InitTables(db *gorm.DB) {
 	// 加 model
-	err := db.AutoMigrate(&system.SysUser{}, &system.SysRole{}, &system.SysMenu{}, &system.SysPermission{})
+	err := db.AutoMigrate(&system2.SysUser{}, &system2.SysRole{}, &system2.SysMenu{}, &system2.SysPermission{})
 	if err != nil {
 		panic(fmt.Errorf("table of database create failed:", err))
 	}

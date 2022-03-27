@@ -51,7 +51,7 @@ func (j *JwtService) CreateJwtByOldClaim(clain *common.Y1tClaim) (string, error)
 
 // ParseJwt 解析jwt
 func (j *JwtService) ParseJwt(tokenString string) (*common.Y1tClaim, int) {
-	token, err := jwt.ParseWithClaims(tokenString, &common.Y1tClaim{}, func(token *jwt.Token) (i interface{}, err error) {
+	token, err := jwt.ParseWithClaims(tokenString, &common.Y1tClaim{}, func(token *jwt.Token) (i any, err error) {
 		return j.SignKey, nil
 	})
 	if err != nil {
