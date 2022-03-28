@@ -25,7 +25,7 @@ func (s *UserService) Register(dto *system2.SysUser) (err error) {
 // UpdateUserInfo 更新用户信息
 func (s *UserService) UpdateUserInfo(dto system2.SysUser) (err error) {
 	var old system2.SysUser
-	err = global.Db.Where("id = ?", dto.ID).Find(&old).Error
+	err = global.Db.First(&old, dto.ID).Error
 	if err != nil {
 		return errors.New("主键查找错误")
 	}
@@ -49,8 +49,8 @@ func (s *UserService) SetUserRoleAndOrg(userId uuid.UUID, roleIds []int, orgIds 
 			return err
 		}
 
-		m2mUserOrgs := []system2.M2mUserOrganize{}
-		m2mUserRoles := []system2.M2mUserRole{}
+		var m2mUserOrgs []system2.M2mUserOrganize
+		var m2mUserRoles []system2.M2mUserRole
 		for _, orgId := range orgIds {
 			m2mUserOrgs = append(m2mUserOrgs, system2.M2mUserOrganize{
 				SysUserId:     userId,
@@ -103,8 +103,13 @@ func (s *UserService) Search(dto system2.SearchUser) (err error, list []system2.
 
 // CheckRepeat 检查 账号 是否存在
 func (s *UserService) CheckRepeat(loginName string) (err error) {
-	var temp system2.SysUser
-	err = global.Db.Limit(1).Where("login_name = ?", loginName).Find(&temp).Error
+	var total int64
+	global.Db.Model(&system2.SysUser{}).Where(&system2.SysUser{LoginName: loginName}).Count(&total)
+	if total != 0 {
+		err = gorm.ErrRecordNotFound
+	} else {
+		err = nil
+	}
 	return
 }
 
@@ -116,19 +121,19 @@ func (s *UserService) GetAll() (err error, dos []system2.SysUser) {
 
 // GetById 根据 id 查用户
 func (s *UserService) GetById(id uuid.UUID) (err error, do system2.SysUser) {
-	err = global.Db.Where("id = ?", id).First(&do).Error
+	err = global.Db.First(&do, id).Error
 	return
 }
 
 // GetCompleteInfoById 根据 id 查用户完整信息
 func (s *UserService) GetCompleteInfoById(id uuid.UUID) (err error, do system2.SysUser) {
-	err = global.Db.Preload(clause.Associations).Where("id = ?", id).First(&do).Error
+	err = global.Db.Preload(clause.Associations).First(&do, id).Error
 	return
 }
 
 // GetUserByRoleId 根据 角色id 查用户
 func (s *UserService) GetUserByRoleId(roleId int) (err error, users []system2.SysUser) {
-	rows, err := global.Db.Where(&system2.M2mUserRole{SysRoleId: roleId}).Rows()
+	rows, err := global.Db.Model(system2.M2mUserRole{}).Where(&system2.M2mUserRole{SysRoleId: roleId}).Rows()
 	defer rows.Close()
 	if err != nil {
 		return err, users
@@ -144,7 +149,7 @@ func (s *UserService) GetUserByRoleId(roleId int) (err error, users []system2.Sy
 
 // GetUserByOrgId 根据 组织id 查用户
 func (s *UserService) GetUserByOrgId(orgId int) (err error, users []system2.SysUser) {
-	rows, err := global.Db.Where(&system2.M2mUserOrganize{SysOrganizeId: orgId}).Rows()
+	rows, err := global.Db.Model(&system2.M2mUserOrganize{}).Where(&system2.M2mUserOrganize{SysOrganizeId: orgId}).Rows()
 	defer rows.Close()
 	if err != nil {
 		return err, users
@@ -168,6 +173,6 @@ func (s *UserService) GetUserByLoginName(loginName string) (error, system2.SysUs
 }
 
 func (s *UserService) Delete(userId uuid.UUID) (err error) {
-	err = global.Db.Where("Id = ?", userId).Delete(&system2.SysUser{}).Error
+	err = global.Db.Delete(&system2.SysUser{}, userId).Error
 	return
 }

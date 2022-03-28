@@ -25,7 +25,7 @@ func (s *RoleService) Register(dto system2.SysRole) (err error) {
 // UpdateRoleInfo 更新角色
 func (s *RoleService) UpdateRoleInfo(dto system2.SysRole) (err error) {
 	var old system2.SysRole
-	err = global.Db.Where("id = ?", dto.ID).Find(&old).Error
+	err = global.Db.First(&old, dto.ID).Error
 	if err != nil {
 		return errors.New("主键查找错误")
 	}
@@ -41,7 +41,7 @@ func (s *RoleService) UpdateRoleInfo(dto system2.SysRole) (err error) {
 // SetRoleMenu 修改角色权限 菜单
 func (s *RoleService) SetRoleMenu(roleId int, menuIds []int) error {
 	return global.Db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where(&system2.M2mRoleMenu{SysRoleId: roleId}).Delete(&system2.M2mRoleMenu{}).Error; err != nil {
+		if err := tx.Delete(&system2.M2mRoleMenu{}, "sys_role_id = ?", roleId).Error; err != nil {
 			return err
 		}
 		var roleMenus []system2.M2mRoleMenu
@@ -56,13 +56,12 @@ func (s *RoleService) SetRoleMenu(roleId int, menuIds []int) error {
 		}
 		return nil
 	})
-
 }
 
 // SetRolePer 修改角色权限 按钮
 func (s *RoleService) SetRolePer(roleId int, perIds []int) (err error) {
 	return global.Db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where(&system2.M2mRolePermission{SysRoleId: roleId}).Delete(&system2.M2mRolePermission{}).Error; err != nil {
+		if err := tx.Delete(&system2.M2mRolePermission{}, "sys_role_id = ?", roleId).Error; err != nil {
 			return err
 		}
 		var rolePers []system2.M2mRolePermission
@@ -110,8 +109,13 @@ func (s *RoleService) Search(dto system2.SearchRole) (err error, list []system2.
 
 // CheckRepeat 检查 pid 和 名称 是否存在
 func (s *RoleService) CheckRepeat(pid int, name string) (err error) {
-	var temp system2.SysRole
-	err = global.Db.Where("pid = ? and name = ?", pid, name).First(&temp).Error
+	var total int64
+	global.Db.Model(&system2.SysRole{}).Where(&system2.SysRole{Name: name, Pid: pid}).Count(&total)
+	if total != 0 {
+		err = gorm.ErrRecordNotFound
+	} else {
+		err = nil
+	}
 	return
 }
 
@@ -123,19 +127,19 @@ func (s *RoleService) GetAll() (err error, dos []system2.SysRole) {
 
 // GetById 根据 id 查角色
 func (s *RoleService) GetById(id int) (err error, do system2.SysRole) {
-	err = global.Db.Where("id = ?", id).First(&do).Error
+	err = global.Db.First(&do, id).Error
 	return
 }
 
-// GetById 根据 id 查角色
+// GetCompleteInfoById 根据 id 查角色
 func (s *RoleService) GetCompleteInfoById(id int) (err error, do system2.SysRole) {
-	err = global.Db.Preload(clause.Associations).Where("id = ?", id).First(&do).Error
+	err = global.Db.Preload(clause.Associations).First(&do, id).Error
 	return
 }
 
 // GetRoleByUserId 根据 用户id 查角色
 func (s *RoleService) GetRoleByUserId(userId uuid.UUID) (err error, roles []system2.SysRole) {
-	rows, err := global.Db.Where(&system2.M2mUserRole{}, userId).Rows()
+	rows, err := global.Db.Model(&system2.M2mUserRole{}).Where(&system2.M2mUserRole{SysUserId: userId}).Rows()
 	defer rows.Close()
 	if err != nil {
 		return err, roles
@@ -149,9 +153,9 @@ func (s *RoleService) GetRoleByUserId(userId uuid.UUID) (err error, roles []syst
 	return
 }
 
-// GetRoleByMenu 根据 菜单id 查角色
+// GetRoleByMenuId 根据 菜单id 查角色
 func (s *RoleService) GetRoleByMenuId(menuId int) (err error, roles []system2.SysRole) {
-	rows, err := global.Db.Where(&system2.M2mRoleMenu{SysMenuId: menuId}).Rows()
+	rows, err := global.Db.Model(&system2.M2mRoleMenu{}).Where(&system2.M2mRoleMenu{SysMenuId: menuId}).Rows()
 	defer rows.Close()
 	if err != nil {
 		return err, roles
@@ -165,9 +169,9 @@ func (s *RoleService) GetRoleByMenuId(menuId int) (err error, roles []system2.Sy
 	return
 }
 
-// GetRoleByPer 根据 按钮id 查角色
+// GetRoleByPerId 根据 按钮id 查角色
 func (s *RoleService) GetRoleByPerId(perId int) (err error, roles []system2.SysRole) {
-	rows, err := global.Db.Where(&system2.M2mRolePermission{SysPermissionId: perId}).Rows()
+	rows, err := global.Db.Model(&system2.M2mRolePermission{}).Where(&system2.M2mRolePermission{SysPermissionId: perId}).Rows()
 	defer rows.Close()
 	if err != nil {
 		return err, roles
@@ -183,11 +187,11 @@ func (s *RoleService) GetRoleByPerId(perId int) (err error, roles []system2.SysR
 
 // GetRoleByOrgId 根据 组织id 查角色
 func (s *RoleService) GetRoleByOrgId(orgId int) (err error, roles []system2.SysRole) {
-	err = global.Db.Where(&system2.SysRole{SysOrganizeId: orgId}).Find(&roles).Error
+	err = global.Db.Find(&roles, orgId).Error
 	return
 }
 
 func (s *RoleService) DeleteRole(roleId int) (err error) {
-	err = global.Db.Where("id = ?", roleId).Delete(&system2.SysRole{}).Error
+	err = global.Db.Delete(&system2.SysRole{}, roleId).Error
 	return
 }

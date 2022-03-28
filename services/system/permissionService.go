@@ -24,7 +24,7 @@ func (s *PermissionService) Register(dto *system2.SysPermission) (err error) {
 // Update 更新页面按钮
 func (s *PermissionService) Update(dto system2.SysPermission) (err error) {
 	var old system2.SysPermission
-	err = global.Db.Where("id = ?", dto.ID).Find(&old).Error
+	err = global.Db.First(&old, dto.ID).Error
 	if err != nil {
 		return errors.New("主键查找错误")
 	}
@@ -69,8 +69,13 @@ func (s *PermissionService) Search(dto system2.SearchPermission) (err error, lis
 
 // CheckRepeat 检查 页面下的按钮 是否存在
 func (s *PermissionService) CheckRepeat(menuId int, name string) (err error) {
-	var temp system2.SysPermission
-	err = global.Db.Where("sys_menu_id = ? and name = ?", menuId, name).First(&temp).Error
+	var total int64
+	global.Db.Model(&system2.SysPermission{}).Where(&system2.SysPermission{SysMenuId: menuId, Name: name}).Count(&total)
+	if total != 0 {
+		err = gorm.ErrRecordNotFound
+	} else {
+		err = nil
+	}
 	return
 }
 
@@ -82,19 +87,19 @@ func (s *PermissionService) GetAll() (err error, dos []system2.SysPermission) {
 
 // GetById 根据 id 查 按钮
 func (s *PermissionService) GetById(id int) (err error, do system2.SysPermission) {
-	err = global.Db.Where("id = ?", id).First(&do).Error
+	err = global.Db.First(&do, id).Error
 	return
 }
 
 // GetPerByMenuId 根据 菜单id 查 按钮
 func (s *PermissionService) GetPerByMenuId(menuId int) (err error, pers []system2.SysPermission) {
-	err = global.Db.Where("sys_menu_id = ?", menuId).Find(&pers).Error
+	err = global.Db.Model(&system2.SysPermission{}).Where(&system2.SysPermission{SysMenuId: menuId}).Find(&pers).Error
 	return
 }
 
-// GetPerByRole 根据 角色id 查按钮
+// GetPerByRoleId 根据 角色id 查按钮
 func (s *PermissionService) GetPerByRoleId(roleId int) (err error, pers []system2.SysPermission) {
-	rows, err := global.Db.Table("m2m_role_permission").Where("sys_role_id = ?", roleId).Rows()
+	rows, err := global.Db.Model(&system2.M2mRolePermission{}).Where(&system2.M2mRolePermission{SysRoleId: roleId}).Rows()
 	defer rows.Close()
 	if err != nil {
 		return err, pers
@@ -118,6 +123,6 @@ func (s *PermissionService) Ids2Object(ids []int) (pers []system2.SysPermission)
 
 // DeletePermission 删除按钮
 func (s *PermissionService) DeletePermission(id int) (err error) {
-	err = global.Db.Where("id = ?", id).Delete(&system2.SysPermission{}).Error
+	err = global.Db.Delete(&system2.SysPermission{}, id).Error
 	return
 }

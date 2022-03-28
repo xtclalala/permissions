@@ -24,7 +24,7 @@ func (s *MenuService) Register(dto *system2.SysMenu) (err error) {
 // Update 更新页面
 func (s *MenuService) Update(dto system2.SysMenu) (err error) {
 	var old system2.SysMenu
-	err = global.Db.Where("id = ?", dto.ID).Find(&old).Error
+	err = global.Db.First(&old, dto.ID).Error
 	if err != nil {
 		return errors.New("主键查找错误")
 	}
@@ -78,7 +78,7 @@ func (s *MenuService) Search(dto system2.SearchMenu) (err error, list []system2.
 // CheckRepeat 检查path 或 name 是否存在
 func (s *MenuService) CheckRepeat(path, name string) (err error) {
 	var total int64
-	global.Db.Where("path = ? or name = ?", path, name).Count(&total)
+	global.Db.Model(&system2.SysMenu{}).Where(&system2.SysMenu{Name: name, Path: path}).Count(&total)
 	if total != 0 {
 		err = gorm.ErrRecordNotFound
 	} else {
@@ -95,13 +95,13 @@ func (s *MenuService) GetAll() (err error, dos []system2.SysMenu) {
 
 // GetById 根据 id 查页面
 func (s *MenuService) GetById(id int) (err error, do system2.SysMenu) {
-	err = global.Db.Where("id = ?", id).First(&do).Error
+	err = global.Db.First(&do, id).Error
 	return
 }
 
-// GetMenuByRole 根据 角色id 查菜单
+// GetMenuByRoleId 根据 角色id 查菜单
 func (s *MenuService) GetMenuByRoleId(roleId int) (err error, menus []system2.SysMenu) {
-	rows, err := global.Db.Table("m2m_role_menu").Where("sys_role_id = ?", roleId).Rows()
+	rows, err := global.Db.Model(&system2.M2mRoleMenu{}).Where(&system2.M2mRoleMenu{SysRoleId: roleId}).Rows()
 	defer rows.Close()
 	if err != nil {
 		return err, menus
@@ -124,6 +124,6 @@ func (s *MenuService) Ids2Object(ids []int) (menus []system2.SysMenu) {
 }
 
 func (s *MenuService) DeleteMenu(id int) (err error) {
-	err = global.Db.Where("id = ?", id).Delete(&system2.SysMenu{}).Error
+	err = global.Db.Delete(&system2.SysMenu{}, id).Error
 	return
 }

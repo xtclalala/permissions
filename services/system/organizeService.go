@@ -25,7 +25,7 @@ func (s *OrganizeService) Register(dto *system2.SysOrganize) (err error) {
 // Update 更新组织
 func (s *OrganizeService) Update(dto *system2.SysOrganize) (err error) {
 	var old system2.SysOrganize
-	err = global.Db.Where("id = ?", dto.ID).Find(&old).Error
+	err = global.Db.First(&old, dto.ID).Error
 	if err != nil {
 		return errors.New("主键查找错误")
 	}
@@ -69,8 +69,13 @@ func (s *OrganizeService) Search(dto *system2.SearchOrganize) (err error, list [
 
 // CheckRepeat 检查 pid 和 name 是否存在
 func (s *OrganizeService) CheckRepeat(pid int, name string) (err error) {
-	var temp system2.SysOrganize
-	err = global.Db.Where("pid = ? and name = ?", pid, name).First(&temp).Error
+	var total int64
+	global.Db.Model(&system2.SysOrganize{}).Where(&system2.SysOrganize{Pid: pid, Name: name}).Count(&total)
+	if total != 0 {
+		err = gorm.ErrRecordNotFound
+	} else {
+		err = nil
+	}
 	return
 }
 
@@ -82,13 +87,13 @@ func (s *OrganizeService) GetAll() (err error, dos []system2.SysOrganize) {
 
 // GetById 根据 id 查组织
 func (s *OrganizeService) GetById(id int) (err error, do system2.SysOrganize) {
-	err = global.Db.Where("id = ?", id).First(&do).Error
+	err = global.Db.First(&do, id).Error
 	return
 }
 
 // GetOrgByUserId 根据 用户id 查组织
 func (s *OrganizeService) GetOrgByUserId(userId uuid.UUID) (err error, orgs []system2.SysOrganize) {
-	rows, err := global.Db.Table("m2m_user_organize").Where("sys_user_id = ?", userId).Rows()
+	rows, err := global.Db.Model(&system2.M2mUserOrganize{}).Where(&system2.M2mUserOrganize{SysUserId: userId}).Rows()
 	defer rows.Close()
 	if err != nil {
 		return err, orgs
@@ -103,6 +108,6 @@ func (s *OrganizeService) GetOrgByUserId(userId uuid.UUID) (err error, orgs []sy
 }
 
 func (s *OrganizeService) DeleteOrganize(id int) (err error) {
-	err = global.Db.Where("id = ?", id).Delete(&system2.SysOrganize{}).Error
+	err = global.Db.Delete(&system2.SysOrganize{}, id).Error
 	return
 }
