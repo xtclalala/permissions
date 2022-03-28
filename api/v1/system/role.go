@@ -154,7 +154,7 @@ func (a *RoleApi) SearchRole(c *gin.Context) {
 	}, c)
 }
 
-// RoleAllByOrg 查找组织下的所有用户
+// RoleAllByOrg 查找组织下的所有角色
 func (a *RoleApi) RoleAllByOrg(c *gin.Context) {
 	var data system2.OrganizeId
 	if err := c.ShouldBindJSON(&data); err != nil {

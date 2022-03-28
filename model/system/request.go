@@ -117,7 +117,7 @@ type MenuBaseInfo struct {
 	Path      string `json:"path"      validate:"required" label:"菜单路径"`
 	Hidden    bool   `json:"hidden" validate:"required" label:"是否隐藏"`
 	Component string `json:"component" validate:"required" label:"组件地址"`
-	Pid       int    `json:"pid"  validate:"required" label:"父级id"`
+	Pid       int    `json:"pid"  validate:"-" label:"父级id"`
 	Sort      int    `json:"sort" validate:"required" label:"排序"`
 	Icon      string `json:"icon" validate:"required" label:"图标"`
 }

@@ -68,7 +68,7 @@ func (a *UserApi) UpdateUserBaseInfo(c *gin.Context) {
 	common.Ok(c)
 }
 
-// 更新用户权限
+// UpdateUserPerInfo 更新用户权限
 func (a *UserApi) UpdateUserPerInfo(c *gin.Context) {
 	var data system3.UserPerInfo
 	if err := c.ShouldBindJSON(&data); err != nil {

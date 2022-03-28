@@ -11,13 +11,15 @@ type PermissionApi struct{}
 
 // Register 注册页面按钮
 func (a *PermissionApi) Register(c *gin.Context) {
-	var data system2.Permission
+	var data system2.PermissionBaseInfo
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		return
 	}
 	msg, code := utils2.Validate(&data)
 	if code == utils2.ERROR {
 		common.FailWithMessage(msg.Error(), c)
+		return
 	}
 	if err := permissionService.Register(&system2.SysPermission{
 		Name:      data.Name,
@@ -25,6 +27,7 @@ func (a *PermissionApi) Register(c *gin.Context) {
 		SysMenuId: data.SysMenuId,
 	}); err != nil {
 		common.FailWhitStatus(utils2.CreatePermissionError, c)
+		return
 	}
 	common.Ok(c)
 }
@@ -34,10 +37,12 @@ func (a *PermissionApi) UpdatePerBaseInfo(c *gin.Context) {
 	var data system2.PermissionBaseInfo
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		return
 	}
 	msg, code := utils2.Validate(&data)
 	if code == utils2.ERROR {
 		common.FailWithMessage(msg.Error(), c)
+		return
 	}
 	if err := permissionService.Update(system2.SysPermission{
 		Name:      data.Name,
@@ -45,6 +50,7 @@ func (a *PermissionApi) UpdatePerBaseInfo(c *gin.Context) {
 		SysMenuId: data.SysMenuId,
 	}); err != nil {
 		common.FailWhitStatus(utils2.UpdatePermissionError, c)
+		return
 	}
 	common.Ok(c)
 }
@@ -54,14 +60,17 @@ func (a *PermissionApi) PermissionAllByMenuId(c *gin.Context) {
 	var data system2.MenuId
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		return
 	}
 	msg, code := utils2.Validate(&data)
 	if code == utils2.ERROR {
 		common.FailWithMessage(msg.Error(), c)
+		return
 	}
 	err, pers := permissionService.GetPerByMenuId(data.Id)
 	if err != nil {
 		common.FailWhitStatus(utils2.FindPermissionError, c)
+		return
 	}
 	common.OkWithData(pers, c)
 }
@@ -71,14 +80,17 @@ func (a *PermissionApi) DeletePermission(c *gin.Context) {
 	var data system2.PermissionId
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		return
 	}
 	msg, code := utils2.Validate(&data)
 	if code == utils2.ERROR {
 		common.FailWithMessage(msg.Error(), c)
+		return
 	}
 	err := permissionService.DeletePermission(data.Id)
 	if err != nil {
 		common.FailWhitStatus(utils2.DeletePermissionError, c)
+		return
 	}
 	common.Ok(c)
 }
