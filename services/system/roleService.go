@@ -133,7 +133,7 @@ func (s *RoleService) GetById(id int) (err error, do system2.SysRole) {
 
 // GetCompleteInfoById 根据 id 查角色
 func (s *RoleService) GetCompleteInfoById(id int) (err error, do system2.SysRole) {
-	err = global.Db.Preload(clause.Associations).First(&do, id).Error
+	err = global.Db.Preload("SysMenus").Preload("SysPermissions").First(&do, id).Error
 	return
 }
 
@@ -187,7 +187,7 @@ func (s *RoleService) GetRoleByPerId(perId int) (err error, roles []system2.SysR
 
 // GetRoleByOrgId 根据 组织id 查角色
 func (s *RoleService) GetRoleByOrgId(orgId int) (err error, roles []system2.SysRole) {
-	err = global.Db.Find(&roles, orgId).Error
+	err = global.Db.Preload("SysMenus").Preload("SysPermissions").Where("sys_organize_id = ?", orgId).Find(&roles).Error
 	return
 }
 

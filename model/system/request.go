@@ -8,7 +8,10 @@ import (
 // SearchUser 分页显示 搜索后的用户
 type SearchUser struct {
 	common.BasePage
-	User
+	SysRoleIds     []int  `json:"roleIds"`
+	SysOrganizeIds []int  `json:"orgIds"`
+	Username       string `json:"name"`
+	LoginName      string `json:"username"`
 }
 
 // User 创建用户
@@ -21,7 +24,7 @@ type User struct {
 type UserBaseInfo struct {
 	UserId
 	UserLogin
-	Username string `json:"name"  validate:"max=15,min=6,required" label:"用户名"`
+	Username string `json:"name"  validate:"max=15,min=5,required" label:"用户名"`
 }
 
 // UserPerInfo 用户权限信息
@@ -33,8 +36,8 @@ type UserPerInfo struct {
 
 // UserLogin 用户登录
 type UserLogin struct {
-	LoginName string `json:"username" validate:"max=15,min=6,required" label:"账号"`
-	Password  string `json:"password"  validate:"max=15,min=6,required" label:"密码"`
+	LoginName string `json:"username" validate:"max=15,min=5,required" label:"账号"`
+	Password  string `json:"password"  validate:"max=15,min=5,required" label:"密码"`
 }
 
 // UserId 用户id
@@ -44,7 +47,8 @@ type UserId struct {
 
 type SearchRole struct {
 	common.BasePage
-	Role
+	Name string `json:"name"`
+	Pid  int    `json:"pid"`
 }
 
 type Role struct {
@@ -129,7 +133,9 @@ type MenuPerInfo struct {
 
 type SearchOrganize struct {
 	common.BasePage
-	Organize
+	Name string `json:"name"`
+	Sort int    `json:"sort"`
+	Pid  int    `json:"pid"`
 }
 
 type Organize struct {
@@ -142,7 +148,7 @@ type OrganizeId struct {
 
 type OrganizeBaseInfo struct {
 	OrganizeId
-	Name string `json:"name" validate:"required,min:6,max:50" label:"组织名称"`
+	Name string `json:"name" validate:"required,min=6,max=50" label:"组织名称"`
 	Sort int    `json:"sort" validate:"required" label:"排序"`
-	Pid  int    `json:"pid" `
+	Pid  int    `json:"pid"`
 }
