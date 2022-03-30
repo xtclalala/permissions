@@ -4,7 +4,7 @@ type SysMenu struct {
 	BaseID
 	Name      string `json:"name" gorm:"comment:路由name;"`
 	Path      string `json:"path" gorm:"comment:路由path;"`
-	Hidden    bool   `json:"hidden" gorm:"default:true;comment:是否隐藏"`
+	Hidden    bool   `json:"hidden" gorm:"default:false;comment:是否隐藏"`
 	Component string `json:"component" gorm:"comment:前端文件路径"`
 	Pid       int    `json:"pid" gorm:"comment:父菜单id"`
 	Sort      int    `json:"sort" gorm:"default:100;comment:排序"`

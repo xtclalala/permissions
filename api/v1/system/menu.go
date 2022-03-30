@@ -24,7 +24,7 @@ func (a *MenuApi) Register(c *gin.Context) {
 	if err := menuService.Register(&system2.SysMenu{
 		Name:      data.Name,
 		Path:      data.Path,
-		Hidden:    data.Hidden,
+		Hidden:    *data.Hidden,
 		Component: data.Component,
 		Pid:       data.Pid,
 		Sort:      data.Sort,
@@ -56,7 +56,7 @@ func (a *MenuApi) UpdateMenuBaseInfo(c *gin.Context) {
 		},
 		Name:      data.Name,
 		Path:      data.Path,
-		Hidden:    data.Hidden,
+		Hidden:    *data.Hidden,
 		Component: data.Component,
 		Pid:       data.Pid,
 		Sort:      data.Sort,

@@ -45,6 +45,9 @@ func (a *PermissionApi) UpdatePerBaseInfo(c *gin.Context) {
 		return
 	}
 	if err := permissionService.Update(system2.SysPermission{
+		BaseID: system2.BaseID{
+			ID: data.Id,
+		},
 		Name:      data.Name,
 		Sort:      data.Sort,
 		SysMenuId: data.SysMenuId,
