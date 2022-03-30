@@ -21,8 +21,8 @@ func (bUuid *BaseUUID) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
-// AfterUpdate 更新时添加更新时间
-func (bUuid *BaseUUID) AfterUpdate(tx *gorm.DB) (err error) {
+// BeforeUpdate 更新时添加更新时间
+func (bUuid *BaseUUID) BeforeUpdate(tx *gorm.DB) (err error) {
 	bUuid.UpdateTime = time.Now()
 	return
 }

@@ -12,8 +12,8 @@ func (r *UserRouter) InitUserRouter(router *gin.RouterGroup) {
 	var userApi = v1.ApiGroupApp.SysApiGroup.UserApi
 	{
 		userRouter.POST("register", userApi.CreateUser)
-		userRouter.POST("baseInfo", userApi.UpdateUserBaseInfo)
-		userRouter.POST("perInfo", userApi.UpdateUserPerInfo)
+		userRouter.PUT("baseInfo", userApi.UpdateUserBaseInfo)
+		userRouter.PUT("perInfo", userApi.UpdateUserPerInfo)
 		userRouter.POST("login", userApi.Login)
 		userRouter.GET("routerAndRole", userApi.GetUserRouterAndRoles)
 		userRouter.POST("SearchUsers", userApi.SearchUsers)

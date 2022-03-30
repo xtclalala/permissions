@@ -6,7 +6,7 @@ import (
 	"permissions/model/common"
 	system3 "permissions/model/system"
 	system2 "permissions/services/system"
-	utils2 "permissions/utils"
+	"permissions/utils"
 )
 
 type UserApi struct{}
@@ -15,11 +15,11 @@ type UserApi struct{}
 func (a *UserApi) CreateUser(c *gin.Context) {
 	var data system3.User
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
@@ -48,16 +48,18 @@ func (a *UserApi) CreateUser(c *gin.Context) {
 func (a *UserApi) UpdateUserBaseInfo(c *gin.Context) {
 	var data system3.UserBaseInfo
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
 	if err := userService.UpdateUserInfo(system3.SysUser{
-		BaseUUID:  system3.BaseUUID{ID: data.Id},
+		BaseUUID: system3.BaseUUID{
+			ID: data.Id,
+		},
 		Username:  data.Username,
 		Password:  data.Password,
 		LoginName: data.LoginName,
@@ -72,11 +74,11 @@ func (a *UserApi) UpdateUserBaseInfo(c *gin.Context) {
 func (a *UserApi) UpdateUserPerInfo(c *gin.Context) {
 	var data system3.UserPerInfo
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
@@ -91,28 +93,28 @@ func (a *UserApi) UpdateUserPerInfo(c *gin.Context) {
 func (a *UserApi) Login(c *gin.Context) {
 	var data system3.UserLogin
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
 	err, user := userService.GetUserByLoginName(data.LoginName)
 	if err != nil {
-		common.FailWhitStatus(utils2.UsernameAndPasswdError, c)
+		common.FailWhitStatus(utils.UsernameAndPasswdError, c)
 		return
 	}
 	if user.Password != data.Password {
-		common.FailWhitStatus(utils2.UsernameAndPasswdError, c)
+		common.FailWhitStatus(utils.UsernameAndPasswdError, c)
 		return
 	}
 	j := system2.NewJWT()
 	claim := j.CreateClaim(&user)
 	token, err := j.CreateJwt(&claim)
 	if err != nil {
-		common.FailWhitStatus(utils2.TokenCreateFailed, c)
+		common.FailWhitStatus(utils.TokenCreateFailed, c)
 		return
 	}
 	common.OkWithData(token, c)
@@ -129,14 +131,14 @@ func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 	}
 	ok, orgs := organizeService.GetOrgByUserId(claim.Id)
 	if ok != nil {
-		common.FailWhitStatus(utils2.FindOrgError, c)
+		common.FailWhitStatus(utils.FindOrgError, c)
 		return
 	}
 	roles := make([]system3.SysRole, 0, 10)
 	for _, org := range orgs {
 		ok, sysRoles := roleService.GetRoleByOrgId(org.ID)
 		if ok != nil {
-			common.FailWhitStatus(utils2.FindRoleError, c)
+			common.FailWhitStatus(utils.FindRoleError, c)
 			return
 		}
 
@@ -144,7 +146,7 @@ func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 			pers := make([]system3.SysPermission, 0, 50)
 			ok, SysPermissions := permissionService.GetPerByRoleId(role.ID)
 			if ok != nil {
-				common.FailWhitStatus(utils2.FindPermissionError, c)
+				common.FailWhitStatus(utils.FindPermissionError, c)
 				return
 			}
 			pers = append(pers, SysPermissions...)
@@ -155,7 +157,7 @@ func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 			menus := make([]system3.SysMenu, 0, 30)
 			ok, sysMenus := menuService.GetMenuByRoleId(role.ID)
 			if ok != nil {
-				common.FailWhitStatus(utils2.FindMenuError, c)
+				common.FailWhitStatus(utils.FindMenuError, c)
 				return
 			}
 			menus = append(menus, sysMenus...)
@@ -176,17 +178,17 @@ func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 func (a *UserApi) SearchUsers(c *gin.Context) {
 	var data system3.SearchUser
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
 	err, list, total := userService.Search(data)
 	if err != nil {
-		common.FailWhitStatus(utils2.FindUserError, c)
+		common.FailWhitStatus(utils.FindUserError, c)
 		return
 	}
 	common.OkWithData(common.PageVO{
@@ -199,17 +201,17 @@ func (a *UserApi) SearchUsers(c *gin.Context) {
 func (a *UserApi) CompleteInfo(c *gin.Context) {
 	var data system3.UserId
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
 	err, user := userService.GetCompleteInfoById(data.Id)
 	if err != nil {
-		common.FailWhitStatus(utils2.FindUserError, c)
+		common.FailWhitStatus(utils.FindUserError, c)
 		return
 	}
 	common.OkWithData(user, c)
@@ -219,16 +221,16 @@ func (a *UserApi) CompleteInfo(c *gin.Context) {
 func (a *UserApi) DeleteUser(c *gin.Context) {
 	var data system3.UserId
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code != utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
 	if err := userService.Delete(data.Id); err != nil {
-		common.FailWhitStatus(utils2.DeleteUserError, c)
+		common.FailWhitStatus(utils.DeleteUserError, c)
 		return
 	}
 	common.Ok(c)

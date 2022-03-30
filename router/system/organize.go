@@ -12,8 +12,8 @@ func (r *OrganizeRouter) InitOrganizeRouter(router *gin.RouterGroup) {
 	var organizeApi = v1.ApiGroupApp.SysApiGroup.OrganizeApi
 	{
 		userRouter.POST("register", organizeApi.Register)
-		userRouter.POST("organize", organizeApi.UpdateOrgBaseInfo)
-		userRouter.GET("organize", organizeApi.SearchOrganize)
+		userRouter.PUT("organize", organizeApi.UpdateOrgBaseInfo)
+		userRouter.POST("organize", organizeApi.SearchOrganize)
 		userRouter.DELETE("organize", organizeApi.DeleteOrganize)
 	}
 }
