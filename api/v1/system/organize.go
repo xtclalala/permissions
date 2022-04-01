@@ -3,30 +3,30 @@ package system
 import (
 	"github.com/gin-gonic/gin"
 	"permissions/model/common"
-	system2 "permissions/model/system"
-	utils2 "permissions/utils"
+	"permissions/model/system"
+	"permissions/utils"
 )
 
 type OrganizeApi struct{}
 
 // Register 注册组织
 func (a *OrganizeApi) Register(c *gin.Context) {
-	var data system2.Organize
+	var data system.Organize
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
-	if err := organizeService.Register(&system2.SysOrganize{
+	if err := organizeService.Register(&system.SysOrganize{
 		Name: data.Name,
 		Pid:  data.Pid,
 		Sort: data.Sort,
 	}); err != nil {
-		common.FailWhitStatus(utils2.CreateOrganizationError, c)
+		common.FailWhitStatus(utils.CreateOrganizationError, c)
 		return
 	}
 	common.Ok(c)
@@ -34,25 +34,25 @@ func (a *OrganizeApi) Register(c *gin.Context) {
 
 // UpdateOrgBaseInfo 更新组织基本信息
 func (a *OrganizeApi) UpdateOrgBaseInfo(c *gin.Context) {
-	var data system2.OrganizeBaseInfo
+	var data system.OrganizeBaseInfo
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
-	if err := organizeService.Update(&system2.SysOrganize{
-		BaseID: system2.BaseID{
+	if err := organizeService.Update(&system.SysOrganize{
+		BaseID: system.BaseID{
 			ID: data.Id,
 		},
 		Name: data.Name,
 		Pid:  data.Pid,
 		Sort: data.Sort,
 	}); err != nil {
-		common.FailWhitStatus(utils2.UpdateOrgBaseError, c)
+		common.FailWhitStatus(utils.UpdateOrgBaseError, c)
 		return
 	}
 	common.Ok(c)
@@ -60,19 +60,19 @@ func (a *OrganizeApi) UpdateOrgBaseInfo(c *gin.Context) {
 
 // SearchOrganize 获取组织
 func (a *OrganizeApi) SearchOrganize(c *gin.Context) {
-	var data system2.SearchOrganize
+	var data system.SearchOrganize
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
 	err, list, total := organizeService.Search(&data)
 	if err != nil {
-		common.FailWhitStatus(utils2.FindOrgError, c)
+		common.FailWhitStatus(utils.FindOrgError, c)
 		return
 	}
 	common.OkWithData(common.PageVO{
@@ -83,19 +83,19 @@ func (a *OrganizeApi) SearchOrganize(c *gin.Context) {
 
 // DeleteOrganize 删除组织
 func (a *OrganizeApi) DeleteOrganize(c *gin.Context) {
-	var data system2.OrganizeId
+	var data system.OrganizeId
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
 	err := organizeService.DeleteOrganize(data.Id)
 	if err != nil {
-		common.FailWhitStatus(utils2.DeleteOrganizationError, c)
+		common.FailWhitStatus(utils.DeleteOrganizationError, c)
 		return
 	}
 	common.Ok(c)

@@ -3,30 +3,30 @@ package system
 import (
 	"github.com/gin-gonic/gin"
 	"permissions/model/common"
-	system2 "permissions/model/system"
-	utils2 "permissions/utils"
+	"permissions/model/system"
+	"permissions/utils"
 )
 
 type PermissionApi struct{}
 
 // Register 注册页面按钮
 func (a *PermissionApi) Register(c *gin.Context) {
-	var data system2.PermissionBaseInfo
+	var data system.PermissionBaseInfo
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
-	if err := permissionService.Register(&system2.SysPermission{
+	if err := permissionService.Register(&system.SysPermission{
 		Name:      data.Name,
 		Sort:      data.Sort,
 		SysMenuId: data.SysMenuId,
 	}); err != nil {
-		common.FailWhitStatus(utils2.CreatePermissionError, c)
+		common.FailWhitStatus(utils.CreatePermissionError, c)
 		return
 	}
 	common.Ok(c)
@@ -34,25 +34,25 @@ func (a *PermissionApi) Register(c *gin.Context) {
 
 // UpdatePerBaseInfo 更新按钮基本信息
 func (a *PermissionApi) UpdatePerBaseInfo(c *gin.Context) {
-	var data system2.PermissionBaseInfo
+	var data system.PermissionBaseInfo
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
-	if err := permissionService.Update(system2.SysPermission{
-		BaseID: system2.BaseID{
+	if err := permissionService.Update(system.SysPermission{
+		BaseID: system.BaseID{
 			ID: data.Id,
 		},
 		Name:      data.Name,
 		Sort:      data.Sort,
 		SysMenuId: data.SysMenuId,
 	}); err != nil {
-		common.FailWhitStatus(utils2.UpdatePermissionError, c)
+		common.FailWhitStatus(utils.UpdatePermissionError, c)
 		return
 	}
 	common.Ok(c)
@@ -60,19 +60,19 @@ func (a *PermissionApi) UpdatePerBaseInfo(c *gin.Context) {
 
 // PermissionAllByMenuId 返回页面所有按钮
 func (a *PermissionApi) PermissionAllByMenuId(c *gin.Context) {
-	var data system2.MenuId
+	var data system.MenuId
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
 	err, pers := permissionService.GetPerByMenuId(data.Id)
 	if err != nil {
-		common.FailWhitStatus(utils2.FindPermissionError, c)
+		common.FailWhitStatus(utils.FindPermissionError, c)
 		return
 	}
 	common.OkWithData(pers, c)
@@ -80,19 +80,19 @@ func (a *PermissionApi) PermissionAllByMenuId(c *gin.Context) {
 
 // DeletePermission 删除按钮
 func (a *PermissionApi) DeletePermission(c *gin.Context) {
-	var data system2.PermissionId
+	var data system.PermissionId
 	if err := c.ShouldBindJSON(&data); err != nil {
-		common.FailWhitStatus(utils2.ParamsResolveFault, c)
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils2.Validate(&data)
-	if code == utils2.ERROR {
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
 	err := permissionService.DeletePermission(data.Id)
 	if err != nil {
-		common.FailWhitStatus(utils2.DeletePermissionError, c)
+		common.FailWhitStatus(utils.DeletePermissionError, c)
 		return
 	}
 	common.Ok(c)

@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"permissions/global"
 	"permissions/model/common"
-	system3 "permissions/model/system"
-	system2 "permissions/services/system"
+	"permissions/model/system"
+	services "permissions/services/system"
 	"permissions/utils"
 )
 
@@ -13,7 +13,7 @@ type UserApi struct{}
 
 // CreateUser 创建用户
 func (a *UserApi) CreateUser(c *gin.Context) {
-	var data system3.User
+	var data system.User
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
@@ -23,15 +23,15 @@ func (a *UserApi) CreateUser(c *gin.Context) {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
-	var roles []system3.SysRole
-	var orgs []system3.SysOrganize
+	var roles []system.SysRole
+	var orgs []system.SysOrganize
 	for _, roleId := range data.SysRoleIds {
-		roles = append(roles, system3.SysRole{BaseID: system3.BaseID{ID: roleId}})
+		roles = append(roles, system.SysRole{BaseID: system.BaseID{ID: roleId}})
 	}
 	for _, orgId := range data.SysOrganizeIds {
-		orgs = append(orgs, system3.SysOrganize{BaseID: system3.BaseID{ID: orgId}})
+		orgs = append(orgs, system.SysOrganize{BaseID: system.BaseID{ID: orgId}})
 	}
-	if err := userService.Register(&system3.SysUser{
+	if err := userService.Register(&system.SysUser{
 		Username:     data.Username,
 		LoginName:    data.LoginName,
 		Password:     data.Password,
@@ -46,7 +46,7 @@ func (a *UserApi) CreateUser(c *gin.Context) {
 
 // UpdateUserBaseInfo 更新基本用户
 func (a *UserApi) UpdateUserBaseInfo(c *gin.Context) {
-	var data system3.UserBaseInfo
+	var data system.UserBaseInfo
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
@@ -56,8 +56,8 @@ func (a *UserApi) UpdateUserBaseInfo(c *gin.Context) {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
-	if err := userService.UpdateUserInfo(system3.SysUser{
-		BaseUUID: system3.BaseUUID{
+	if err := userService.UpdateUserInfo(system.SysUser{
+		BaseUUID: system.BaseUUID{
 			ID: data.Id,
 		},
 		Username:  data.Username,
@@ -72,7 +72,7 @@ func (a *UserApi) UpdateUserBaseInfo(c *gin.Context) {
 
 // UpdateUserPerInfo 更新用户权限
 func (a *UserApi) UpdateUserPerInfo(c *gin.Context) {
-	var data system3.UserPerInfo
+	var data system.UserPerInfo
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
@@ -91,7 +91,7 @@ func (a *UserApi) UpdateUserPerInfo(c *gin.Context) {
 
 // Login 登录
 func (a *UserApi) Login(c *gin.Context) {
-	var data system3.UserLogin
+	var data system.UserLogin
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
@@ -110,7 +110,7 @@ func (a *UserApi) Login(c *gin.Context) {
 		common.FailWhitStatus(utils.UsernameAndPasswdError, c)
 		return
 	}
-	j := system2.NewJWT()
+	j := services.NewJWT()
 	claim := j.CreateClaim(&user)
 	token, err := j.CreateJwt(&claim)
 	if err != nil {
@@ -123,7 +123,7 @@ func (a *UserApi) Login(c *gin.Context) {
 // GetUserRouterAndRoles 当前登录用户完整信息
 func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 	token := c.GetHeader(global.System.App.Auth)
-	j := system2.NewJWT()
+	j := services.NewJWT()
 	claim, err := j.ParseJwt(token)
 	if err != 0 {
 		common.FailWhitStatus(err, c)
@@ -134,7 +134,7 @@ func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 		common.FailWhitStatus(utils.FindOrgError, c)
 		return
 	}
-	roles := make([]system3.SysRole, 0, 10)
+	roles := make([]system.SysRole, 0, 10)
 	for _, org := range orgs {
 		ok, sysRoles := roleService.GetRoleByOrgId(org.ID)
 		if ok != nil {
@@ -143,7 +143,7 @@ func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 		}
 
 		for i, role := range sysRoles {
-			pers := make([]system3.SysPermission, 0, 50)
+			pers := make([]system.SysPermission, 0, 50)
 			ok, SysPermissions := permissionService.GetPerByRoleId(role.ID)
 			if ok != nil {
 				common.FailWhitStatus(utils.FindPermissionError, c)
@@ -154,7 +154,7 @@ func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 		}
 
 		for i, role := range sysRoles {
-			menus := make([]system3.SysMenu, 0, 30)
+			menus := make([]system.SysMenu, 0, 30)
 			ok, sysMenus := menuService.GetMenuByRoleId(role.ID)
 			if ok != nil {
 				common.FailWhitStatus(utils.FindMenuError, c)
@@ -176,7 +176,7 @@ func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 
 // SearchUsers 搜索
 func (a *UserApi) SearchUsers(c *gin.Context) {
-	var data system3.SearchUser
+	var data system.SearchUser
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
@@ -199,7 +199,7 @@ func (a *UserApi) SearchUsers(c *gin.Context) {
 
 // CompleteInfo 用户详细信息
 func (a *UserApi) CompleteInfo(c *gin.Context) {
-	var data system3.UserId
+	var data system.UserId
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
@@ -219,7 +219,7 @@ func (a *UserApi) CompleteInfo(c *gin.Context) {
 
 // DeleteUser 删除用户
 func (a *UserApi) DeleteUser(c *gin.Context) {
-	var data system3.UserId
+	var data system.UserId
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
