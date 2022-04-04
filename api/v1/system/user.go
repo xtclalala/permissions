@@ -129,6 +129,8 @@ func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 		common.FailWhitStatus(err, c)
 		return
 	}
+	//claim, _ := c.Get("claims")
+	//claims := claim.(common.Y1tClaim)
 	ok, orgs := organizeService.GetOrgByUserId(claim.Id)
 	if ok != nil {
 		common.FailWhitStatus(utils.FindOrgError, c)
@@ -168,8 +170,9 @@ func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 	}
 
 	data := map[string]any{
-		"roles": roles,
-		"orgs":  orgs,
+		"username": claim.Username,
+		"roles":    roles,
+		"orgs":     orgs,
 	}
 	common.OkWithData(data, c)
 }

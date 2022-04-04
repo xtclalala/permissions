@@ -28,7 +28,7 @@ type Logger struct {
 
 type Jwt struct {
 	SignKey    string `mapstructure:"signKey" yaml:"signKey"`
-	Timeout    int    `mapstructure:"timeout" yaml:"timeout"`
+	Timeout    int64  `mapstructure:"timeout" yaml:"timeout"`
 	Iss        string `mapstructure:"iss" yaml:"iss"`
-	BufferTime int    `mapstructure:"bufferTime" yaml:"bufferTime"`
+	BufferTime int64  `mapstructure:"bufferTime" yaml:"bufferTime"`
 }

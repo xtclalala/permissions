@@ -32,7 +32,7 @@ func (j *JwtService) CreateClaim(user *system.SysUser) common.Y1tClaim {
 		BufferTime: bufferTime * 60 * 60,
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix(),
-			ExpiresAt: time.Now().AddDate(0, timeout, 0).Unix(),
+			ExpiresAt: time.Now().Unix() + timeout,
 			Issuer:    iss,
 		},
 	}

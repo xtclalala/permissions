@@ -9,6 +9,6 @@ type Y1tClaim struct {
 	Id         uuid.UUID `json:"id"`
 	Username   string    `json:"username"`
 	LoginName  string    `json:"loginName"`
-	BufferTime int       `json:"bufferTime"`
+	BufferTime int64     `json:"bufferTime"`
 	jwt.StandardClaims
 }

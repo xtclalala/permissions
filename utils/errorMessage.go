@@ -40,13 +40,14 @@ var (
 	TokenMalformed    = 3004
 	ClaimParseFailed  = 3005
 	TokenCreateFailed = 3006
+	NOTOKEN           = 3007
 )
 
 var codeMsg = map[int]string{
 	SUCCESS: "操作成功",
 	ERROR:   "操作失败",
 
-	ParamsResolveFault: "参数解析失败",
+	ParamsResolveFault: "sys.",
 
 	UsernameAndPasswdError: "sys.user.usernameAndPasswdError",
 	FindOrgError:           "sys.user.findOrgError",
@@ -73,6 +74,7 @@ var codeMsg = map[int]string{
 	DeleteOrganizationError: "sys.user.deleteOrganizationError",
 	DeleteMenuError:         "sys.user.deleteMenuError",
 
+	NOTOKEN:           "sys.token.noToken",
 	TokenExpired:      "sys.token.expired",
 	TokenInvalid:      "sys.token.invalid",
 	TokenMalformed:    "sys.token.malformed",

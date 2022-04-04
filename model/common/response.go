@@ -29,7 +29,7 @@ func OkWithMessage(msg string, c *gin.Context) {
 }
 
 func OkWithData(data any, c *gin.Context) {
-	Result(utils.SUCCESS, data, "", c)
+	Result(utils.SUCCESS, data, utils.GetErrorMessage(utils.SUCCESS), c)
 }
 
 func Fail(c *gin.Context) {

@@ -14,7 +14,6 @@ func (r *UserRouter) InitUserRouter(router *gin.RouterGroup) {
 		userRouter.POST("register", userApi.CreateUser)
 		userRouter.PUT("baseInfo", userApi.UpdateUserBaseInfo)
 		userRouter.PUT("perInfo", userApi.UpdateUserPerInfo)
-		userRouter.POST("login", userApi.Login)
 		userRouter.GET("routerAndRole", userApi.GetUserRouterAndRoles)
 		userRouter.POST("SearchUsers", userApi.SearchUsers)
 		userRouter.GET("user", userApi.CompleteInfo)
