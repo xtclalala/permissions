@@ -3,6 +3,7 @@ package system
 type SysMenu struct {
 	BaseID
 	Name      string `json:"name" gorm:"comment:路由name;"`
+	Title     string `json:"title" gorm:"comment:路由标题;"`
 	Path      string `json:"path" gorm:"comment:路由path;"`
 	Hidden    bool   `json:"hidden" gorm:"default:false;comment:是否隐藏"`
 	Component string `json:"component" gorm:"comment:前端文件路径"`

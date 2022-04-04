@@ -55,6 +55,7 @@ func (a *MenuApi) UpdateMenuBaseInfo(c *gin.Context) {
 			ID: data.Id,
 		},
 		Name:      data.Name,
+		Title:     data.Title,
 		Path:      data.Path,
 		Hidden:    *data.Hidden,
 		Component: data.Component,
