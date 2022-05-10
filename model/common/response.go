@@ -49,6 +49,6 @@ func FailWhitStatus(status int, c *gin.Context) {
 }
 
 type PageVO struct {
-	Items any
-	Total int64
+	Items any   `json:"items"`
+	Total int64 `json:"total"`
 }

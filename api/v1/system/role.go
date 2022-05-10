@@ -130,6 +130,7 @@ func (a *RoleApi) CopyRole(c *gin.Context) {
 	common.Ok(c)
 }
 
+// CompleteRole 角色详细信息
 func (a RoleApi) CompleteRole(c *gin.Context) {
 	var data system.RoleId
 	if err := c.ShouldBindQuery(&data); err != nil {
