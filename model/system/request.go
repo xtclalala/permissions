@@ -103,7 +103,11 @@ type PermissionPerInfo struct {
 
 type SearchMenu struct {
 	common.BasePage
-	Menu
+	Pid       int    `json:"pid"  validate:"-"`
+	Path      string `json:"path"      validate:"-"`
+	Name      string `json:"name"      validate:"-"`
+	Component string `json:"component" validate:"-"`
+	Hidden    *bool  `json:"hidden" validate:"-"`
 }
 
 type Menu struct {

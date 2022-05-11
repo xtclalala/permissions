@@ -12,8 +12,8 @@ func (r *MenuRouter) InitMenuRouter(router *gin.RouterGroup) {
 	var menuApi = v1.ApiGroupApp.SysApiGroup.MenuApi
 	{
 		userRouter.POST("register", menuApi.Register)
-		userRouter.POST("menu", menuApi.UpdateMenuBaseInfo)
-		userRouter.GET("menuAll", menuApi.MenuAll)
+		userRouter.POST("menu", menuApi.UpdateMenuInfo)
+		userRouter.GET("menu", menuApi.SearchMenu)
 		userRouter.DELETE("menu", menuApi.DeleteMenu)
 	}
 }

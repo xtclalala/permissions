@@ -38,8 +38,8 @@ func (a *MenuApi) Register(c *gin.Context) {
 	common.Ok(c)
 }
 
-// UpdateMenuBaseInfo 更新菜单基本信息
-func (a *MenuApi) UpdateMenuBaseInfo(c *gin.Context) {
+// UpdateMenuInfo 更新菜单
+func (a *MenuApi) UpdateMenuInfo(c *gin.Context) {
 	var data system.MenuBaseInfo
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
@@ -71,14 +71,27 @@ func (a *MenuApi) UpdateMenuBaseInfo(c *gin.Context) {
 	common.Ok(c)
 }
 
-// MenuAll 所有页面
-func (a *MenuApi) MenuAll(c *gin.Context) {
-	err, menus := menuService.GetAll()
-	if err != nil {
-		common.FailWhitStatus(utils.FindMenuError, c)
+// SearchMenu 搜索菜单
+func (a *MenuApi) SearchMenu(c *gin.Context) {
+	var data system.SearchMenu
+	if err := c.ShouldBindQuery(&data); err != nil {
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	common.OkWithData(menus, c)
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
+		common.FailWithMessage(msg.Error(), c)
+		return
+	}
+	err, list, total := menuService.Search(data)
+	if err != nil {
+		common.FailWhitStatus(utils.FindRoleError, c)
+		return
+	}
+	common.OkWithData(&common.PageVO{
+		Items: list,
+		Total: total,
+	}, c)
 }
 
 // DeleteMenu 删除菜单

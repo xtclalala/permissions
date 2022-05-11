@@ -19,7 +19,7 @@ func (r *RoleRouter) InitRoleRouter(router *gin.RouterGroup) {
 		userRouter.POST("copyRole", roleApi.CopyRole)
 		userRouter.GET("roleCompleteInfo", roleApi.CompleteRole)
 		userRouter.DELETE("role", roleApi.DeleteRole)
-		userRouter.POST("role", roleApi.SearchRole)
+		userRouter.GET("role", roleApi.SearchRole)
 		userRouter.GET("roleByOrg", roleApi.RoleAllByOrg)
 	}
 }

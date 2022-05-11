@@ -10,8 +10,6 @@ import (
 
 type MenuService struct{}
 
-var AppMenuService = new(MenuService)
-
 // Register 注册页面
 func (s *MenuService) Register(dto *system2.SysMenu) (err error) {
 	if errors.Is(s.CheckRepeat(dto.Path, dto.Name), gorm.ErrRecordNotFound) {
@@ -56,7 +54,7 @@ func (s *MenuService) Search(dto system2.SearchMenu) (err error, list []system2.
 	if dto.Component != "" {
 		db = db.Where("component like ?", "%"+dto.Component+"%")
 	}
-	if &(dto.Hidden) != nil {
+	if dto.Hidden != nil {
 		db = db.Where("hidden = ?", dto.Hidden)
 	}
 
@@ -123,6 +121,7 @@ func (s *MenuService) Ids2Object(ids []int) (menus []system2.SysMenu) {
 	return
 }
 
+// DeleteMenu 删除
 func (s *MenuService) DeleteMenu(id int) (err error) {
 	err = global.Db.Delete(&system2.SysMenu{}, id).Error
 	return
