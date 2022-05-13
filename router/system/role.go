@@ -12,7 +12,7 @@ func (r *RoleRouter) InitRoleRouter(router *gin.RouterGroup) {
 	userRouter := router.Group("role") //.Use(middleware.LogToFile())
 	var roleApi = v1.ApiGroupApp.SysApiGroup.RoleApi
 	{
-		userRouter.POST("register", roleApi.CreateRole)
+		userRouter.POST("role", roleApi.CreateRole)
 		userRouter.POST("roleBaseInfo", roleApi.UpdateBaseRole)
 		userRouter.POST("menus", roleApi.UpdateRoleMenus)
 		userRouter.POST("per", roleApi.UpdateRolePer)

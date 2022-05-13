@@ -58,10 +58,10 @@ func (a *OrganizeApi) UpdateOrgBaseInfo(c *gin.Context) {
 	common.Ok(c)
 }
 
-// SearchOrganize 获取组织
+// SearchOrganize 搜索组织
 func (a *OrganizeApi) SearchOrganize(c *gin.Context) {
 	var data system.SearchOrganize
-	if err := c.ShouldBindJSON(&data); err != nil {
+	if err := c.ShouldBindQuery(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}

@@ -180,7 +180,7 @@ func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 // SearchUsers 搜索
 func (a *UserApi) SearchUsers(c *gin.Context) {
 	var data system.SearchUser
-	if err := c.ShouldBindJSON(&data); err != nil {
+	if err := c.ShouldBindQuery(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}

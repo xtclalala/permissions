@@ -168,7 +168,7 @@ func (a *RoleApi) DeleteRole(c *gin.Context) {
 // SearchRole 搜索角色
 func (a *RoleApi) SearchRole(c *gin.Context) {
 	var data system.SearchRole
-	if err := c.ShouldBindJSON(&data); err != nil {
+	if err := c.ShouldBindQuery(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}

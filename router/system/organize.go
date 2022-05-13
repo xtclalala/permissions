@@ -11,9 +11,9 @@ func (r *OrganizeRouter) InitOrganizeRouter(router *gin.RouterGroup) {
 	userRouter := router.Group("organize") //.Use(middleware.LogToFile())
 	var organizeApi = v1.ApiGroupApp.SysApiGroup.OrganizeApi
 	{
-		userRouter.POST("register", organizeApi.Register)
+		userRouter.POST("organize", organizeApi.Register)
 		userRouter.PUT("organize", organizeApi.UpdateOrgBaseInfo)
-		userRouter.POST("organize", organizeApi.SearchOrganize)
+		userRouter.GET("organize", organizeApi.SearchOrganize)
 		userRouter.DELETE("organize", organizeApi.DeleteOrganize)
 	}
 }

@@ -22,7 +22,7 @@ func (s *PermissionService) Register(dto *system2.SysPermission) (err error) {
 }
 
 // Update 更新页面按钮
-func (s *PermissionService) Update(dto system2.SysPermission) (err error) {
+func (s *PermissionService) Update(dto *system2.SysPermission) (err error) {
 	var old system2.SysPermission
 	err = global.Db.First(&old, dto.ID).Error
 	if err != nil {
@@ -39,7 +39,7 @@ func (s *PermissionService) Update(dto system2.SysPermission) (err error) {
 }
 
 // Search 搜索菜单
-func (s *PermissionService) Search(dto system2.SearchPermission) (err error, list []system2.SysPermission, total int64) {
+func (s *PermissionService) Search(dto *system2.SearchPermission) (err error, list []system2.SysPermission, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system2.SysPermission{})

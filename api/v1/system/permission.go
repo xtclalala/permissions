@@ -44,7 +44,7 @@ func (a *PermissionApi) UpdatePerBaseInfo(c *gin.Context) {
 		common.FailWithMessage(msg.Error(), c)
 		return
 	}
-	if err := permissionService.Update(system.SysPermission{
+	if err := permissionService.Update(&system.SysPermission{
 		BaseID: system.BaseID{
 			ID: data.Id,
 		},
@@ -76,6 +76,29 @@ func (a *PermissionApi) PermissionAllByMenuId(c *gin.Context) {
 		return
 	}
 	common.OkWithData(pers, c)
+}
+
+// SearchPermission 搜索页面权限
+func (a *PermissionApi) SearchPermission(c *gin.Context) {
+	var data system.SearchPermission
+	if err := c.ShouldBindQuery(&data); err != nil {
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
+		return
+	}
+	msg, code := utils.Validate(&data)
+	if code == utils.ERROR {
+		common.FailWithMessage(msg.Error(), c)
+		return
+	}
+	err, list, total := permissionService.Search(&data)
+	if err != nil {
+		common.FailWhitStatus(utils.FindOrgError, c)
+		return
+	}
+	common.OkWithData(common.PageVO{
+		Items: list,
+		Total: total,
+	}, c)
 }
 
 // DeletePermission 删除按钮
