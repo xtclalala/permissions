@@ -118,7 +118,7 @@ type Menu struct {
 }
 
 type MenuId struct {
-	Id int `json:"id"  validate:"-" label:"菜单id"`
+	Id int `json:"id"  validate:"required" label:"菜单id"`
 }
 
 type MenuBaseInfo struct {

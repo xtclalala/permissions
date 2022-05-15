@@ -29,5 +29,5 @@ func (bUuid *BaseUUID) BeforeUpdate(tx *gorm.DB) (err error) {
 
 // BaseID 自增id模板
 type BaseID struct {
-	ID int `gorm:"primary_key"`
+	ID int `json:"id" gorm:"primary_key"`
 }

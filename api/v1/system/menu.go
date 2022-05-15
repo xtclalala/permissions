@@ -22,6 +22,7 @@ func (a *MenuApi) Register(c *gin.Context) {
 		return
 	}
 	if err := menuService.Register(&system.SysMenu{
+		Title:     data.Title,
 		Name:      data.Name,
 		Path:      data.Path,
 		Hidden:    *data.Hidden,
