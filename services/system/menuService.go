@@ -51,6 +51,9 @@ func (s *MenuService) Search(dto system2.SearchMenu) (err error, list []system2.
 	if dto.Name != "" {
 		db = db.Where("name like ?", "%"+dto.Name+"%")
 	}
+	if dto.Title != "" {
+		db = db.Where("title like ?", "%"+dto.Title+"%")
+	}
 	if dto.Component != "" {
 		db = db.Where("component like ?", "%"+dto.Component+"%")
 	}

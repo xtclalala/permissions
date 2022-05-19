@@ -105,11 +105,12 @@ type PermissionPerInfo struct {
 
 type SearchMenu struct {
 	common.BasePage
-	Pid       int    `json:"pid"  validate:"-"`
-	Path      string `json:"path"      validate:"-"`
-	Name      string `json:"name"      validate:"-"`
-	Component string `json:"component" validate:"-"`
-	Hidden    *bool  `json:"hidden" validate:"-"`
+	Pid       int    `form:"pid"`
+	Path      string `form:"path"`
+	Name      string `form:"name"`
+	Title     string `form:"title"`
+	Component string `form:"component"`
+	Hidden    *bool  `form:"hidden"`
 }
 
 type Menu struct {
@@ -122,7 +123,7 @@ type MenuId struct {
 }
 
 type MenuBaseInfo struct {
-	MenuId
+	Id        int    `json:"id"  validate:"-" label:"菜单id"`
 	Name      string `json:"name"      validate:"required" label:"菜单英文名称"`
 	Title     string `json:"title"      validate:"required" label:"菜单中文名称"`
 	Path      string `json:"path"      validate:"required" label:"菜单路径"`
