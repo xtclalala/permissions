@@ -14,6 +14,7 @@ func (r *MenuRouter) InitMenuRouter(router *gin.RouterGroup) {
 		userRouter.POST("menu", menuApi.Register)
 		userRouter.PUT("menu", menuApi.UpdateMenuInfo)
 		userRouter.GET("menu", menuApi.SearchMenu)
+		userRouter.GET("addMenu", menuApi.AllMenu)
 		userRouter.DELETE("menu", menuApi.DeleteMenu)
 	}
 }

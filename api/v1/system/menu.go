@@ -95,6 +95,15 @@ func (a *MenuApi) SearchMenu(c *gin.Context) {
 	}, c)
 }
 
+func (a *MenuApi) AllMenu(c *gin.Context) {
+	err, list := menuService.GetAll()
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
+		return
+	}
+	common.OkWithData(list, c)
+}
+
 // DeleteMenu 删除菜单
 func (a *MenuApi) DeleteMenu(c *gin.Context) {
 	var data system.MenuId

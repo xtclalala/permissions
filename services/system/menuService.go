@@ -36,15 +36,11 @@ func (s *MenuService) Update(dto system2.SysMenu) (err error) {
 }
 
 // Search 搜索菜单
-func (s *MenuService) Search(dto system2.SearchMenu) (err error, list []system2.SysMenu, total int64) {
+func (s *MenuService) Search(dto system2.SearchMenu) (err error, menus []system2.SysMenu, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system2.SysMenu{})
-	var menus []system2.SysMenu
 
-	if dto.Pid != 0 {
-		db = db.Where("pid = ?", dto.Pid)
-	}
 	if dto.Path != "" {
 		db = db.Where("path like ?", "%"+dto.Path+"%")
 	}
@@ -62,6 +58,7 @@ func (s *MenuService) Search(dto system2.SearchMenu) (err error, list []system2.
 	}
 
 	err = db.Count(&total).Error
+	db = db.Where("pid = 0")
 	if err != nil {
 		return err, menus, total
 	}
@@ -72,8 +69,12 @@ func (s *MenuService) Search(dto system2.SearchMenu) (err error, list []system2.
 		Desc:   dto.Desc,
 	}
 
-	err = db.Order(oc).Find(&list).Error
-	return err, list, total
+	err = db.Order(oc).Find(&menus).Error
+	for i := 0; i < len(menus); i++ {
+		_, list := s.GetByPid(menus[i].ID)
+		menus[i].Children = list
+	}
+	return err, menus, total
 }
 
 // CheckRepeat 检查path 或 name 是否存在
@@ -97,6 +98,12 @@ func (s *MenuService) GetAll() (err error, dos []system2.SysMenu) {
 // GetById 根据 id 查页面
 func (s *MenuService) GetById(id int) (err error, do system2.SysMenu) {
 	err = global.Db.First(&do, id).Error
+	return
+}
+
+// GetByPid 根据 pid 查页面
+func (s *MenuService) GetByPid(pid int) (err error, dos []system2.SysMenu) {
+	err = global.Db.Where("pid = ?", pid).Find(&dos).Error
 	return
 }
 
