@@ -21,8 +21,7 @@ func Validate(data any) error {
 		return label
 	})
 
-	err := validate.Struct(data)
-	if err != nil {
+	if err := validate.Struct(data); err != nil {
 		for _, v := range err.(validator.ValidationErrors) {
 			return errors.New(v.Translate(trans))
 		}

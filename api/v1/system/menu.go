@@ -16,8 +16,7 @@ func (a *MenuApi) Register(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -46,8 +45,7 @@ func (a *MenuApi) UpdateMenuInfo(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -79,8 +77,7 @@ func (a *MenuApi) SearchMenu(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -111,13 +108,11 @@ func (a *MenuApi) DeleteMenu(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
-	err = menuService.DeleteMenu(data.Id)
-	if err != nil {
+	if err := menuService.DeleteMenu(data.Id); err != nil {
 		common.FailWhitStatus(utils.DeleteMenuError, c)
 		return
 	}

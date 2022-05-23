@@ -18,8 +18,8 @@ func (a *UserApi) CreateUser(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -51,8 +51,8 @@ func (a *UserApi) UpdateUserBaseInfo(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -77,8 +77,8 @@ func (a *UserApi) UpdateUserPerInfo(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -96,8 +96,8 @@ func (a *UserApi) Login(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -184,8 +184,8 @@ func (a *UserApi) SearchUsers(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -207,8 +207,8 @@ func (a *UserApi) CompleteInfo(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -227,8 +227,8 @@ func (a *UserApi) DeleteUser(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}

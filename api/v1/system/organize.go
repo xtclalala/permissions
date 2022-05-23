@@ -16,8 +16,7 @@ func (a *OrganizeApi) Register(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -39,8 +38,8 @@ func (a *OrganizeApi) UpdateOrgBaseInfo(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -65,8 +64,8 @@ func (a *OrganizeApi) SearchOrganize(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -88,13 +87,13 @@ func (a *OrganizeApi) DeleteOrganize(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
-	err = organizeService.DeleteOrganize(data.Id)
-	if err != nil {
+
+	if err := organizeService.DeleteOrganize(data.Id); err != nil {
 		common.FailWhitStatus(utils.DeleteOrganizationError, c)
 		return
 	}

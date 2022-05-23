@@ -16,8 +16,7 @@ func (a *PermissionApi) Register(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -40,8 +39,7 @@ func (a *PermissionApi) UpdatePerBaseInfo(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -66,8 +64,8 @@ func (a *PermissionApi) PermissionAllByMenuId(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -86,8 +84,8 @@ func (a *PermissionApi) SearchPermission(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -109,12 +107,12 @@ func (a *PermissionApi) DeletePermission(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
-	err = permissionService.DeletePermission(data.Id)
+	err := permissionService.DeletePermission(data.Id)
 	if err != nil {
 		common.FailWhitStatus(utils.DeletePermissionError, c)
 		return

@@ -16,8 +16,8 @@ func (a *RoleApi) CreateRole(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -44,8 +44,8 @@ func (a *RoleApi) UpdateBaseRole(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -68,8 +68,8 @@ func (a RoleApi) UpdateRoleMenus(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -87,8 +87,8 @@ func (a RoleApi) UpdateRolePer(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -106,13 +106,13 @@ func (a *RoleApi) CopyRole(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
 	err, role := roleService.GetCompleteInfoById(data.Id)
-	if err != nil {
+	if err := utils.Validate(&data); err != nil {
 		common.FailWhitStatus(utils.FindRoleError, c)
 		return
 	}
@@ -152,12 +152,12 @@ func (a *RoleApi) DeleteRole(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
-	err = roleService.DeleteRole(data.Id)
+	err := roleService.DeleteRole(data.Id)
 	if err != nil {
 		common.FailWhitStatus(utils.DeleteRoleError, c)
 		return
@@ -172,8 +172,8 @@ func (a *RoleApi) SearchRole(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -195,8 +195,8 @@ func (a *RoleApi) RoleAllByOrg(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	err := utils.Validate(&data)
-	if err != nil {
+
+	if err := utils.Validate(&data); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
