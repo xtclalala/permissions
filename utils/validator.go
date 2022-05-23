@@ -10,7 +10,7 @@ import (
 )
 
 // Validate 验证字段，结构体内的结构体属性也会被验证
-func Validate(data any) (error, int) {
+func Validate(data any) error {
 	validate := validator.New()
 	uni := unTrans.New(zh_Hans_CN.New())
 	trans, _ := uni.GetTranslator("zh_Hans_CN")
@@ -24,8 +24,8 @@ func Validate(data any) (error, int) {
 	err := validate.Struct(data)
 	if err != nil {
 		for _, v := range err.(validator.ValidationErrors) {
-			return errors.New(v.Translate(trans)), ERROR
+			return errors.New(v.Translate(trans))
 		}
 	}
-	return errors.New(""), SUCCESS
+	return nil
 }

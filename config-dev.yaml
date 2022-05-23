@@ -1,5 +1,5 @@
 app:
-  port: ':55555'
+  port: ':33333'
   auth: 'y1t-gov'
 db:
   type: 'mysql'

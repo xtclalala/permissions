@@ -16,13 +16,14 @@ func (a *PermissionApi) Register(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils.Validate(&data)
-	if code == utils.ERROR {
-		common.FailWithMessage(msg.Error(), c)
+	err := utils.Validate(&data)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
 		return
 	}
 	if err := permissionService.Register(&system.SysPermission{
 		Name:      data.Name,
+		Code:      data.Code,
 		Sort:      data.Sort,
 		SysMenuId: data.SysMenuId,
 	}); err != nil {
@@ -39,9 +40,9 @@ func (a *PermissionApi) UpdatePerBaseInfo(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils.Validate(&data)
-	if code == utils.ERROR {
-		common.FailWithMessage(msg.Error(), c)
+	err := utils.Validate(&data)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
 		return
 	}
 	if err := permissionService.Update(&system.SysPermission{
@@ -65,9 +66,9 @@ func (a *PermissionApi) PermissionAllByMenuId(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils.Validate(&data)
-	if code == utils.ERROR {
-		common.FailWithMessage(msg.Error(), c)
+	err := utils.Validate(&data)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
 		return
 	}
 	err, pers := permissionService.GetPerByMenuId(data.Id)
@@ -85,9 +86,9 @@ func (a *PermissionApi) SearchPermission(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils.Validate(&data)
-	if code == utils.ERROR {
-		common.FailWithMessage(msg.Error(), c)
+	err := utils.Validate(&data)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
 		return
 	}
 	err, list, total := permissionService.Search(&data)
@@ -108,12 +109,12 @@ func (a *PermissionApi) DeletePermission(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils.Validate(&data)
-	if code == utils.ERROR {
-		common.FailWithMessage(msg.Error(), c)
+	err := utils.Validate(&data)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
 		return
 	}
-	err := permissionService.DeletePermission(data.Id)
+	err = permissionService.DeletePermission(data.Id)
 	if err != nil {
 		common.FailWhitStatus(utils.DeletePermissionError, c)
 		return

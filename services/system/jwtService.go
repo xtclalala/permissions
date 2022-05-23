@@ -19,7 +19,7 @@ func NewJWT() *JwtService {
 	}
 }
 
-// CreateClaim 创建clain
+// CreateClaim 创建claim
 func (j *JwtService) CreateClaim(user *system.SysUser) common.Y1tClaim {
 	jwtConfig := global.System.Jwt
 	timeout := jwtConfig.Timeout
@@ -45,8 +45,8 @@ func (j *JwtService) CreateJwt(clain *common.Y1tClaim) (string, error) {
 }
 
 // CreateJwtByOldClaim 生成新的jwt
-func (j *JwtService) CreateJwtByOldClaim(clain *common.Y1tClaim) (string, error) {
-	return j.CreateJwt(clain)
+func (j *JwtService) CreateJwtByOldClaim(claim *common.Y1tClaim) (string, error) {
+	return j.CreateJwt(claim)
 }
 
 // ParseJwt 解析jwt
@@ -68,8 +68,8 @@ func (j *JwtService) ParseJwt(tokenString string) (*common.Y1tClaim, int) {
 		}
 	}
 	if token != nil {
-		if clain, ok := token.Claims.(*common.Y1tClaim); ok && token.Valid {
-			return clain, 0
+		if claim, ok := token.Claims.(*common.Y1tClaim); ok && token.Valid {
+			return claim, 0
 		} else {
 			return nil, utils.TokenInvalid
 		}

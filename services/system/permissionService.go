@@ -10,8 +10,6 @@ import (
 
 type PermissionService struct{}
 
-var AppPermissionService = new(PermissionService)
-
 // Register 注册页面按钮
 func (s *PermissionService) Register(dto *system2.SysPermission) (err error) {
 	if errors.Is(s.CheckRepeat(dto.SysMenuId, dto.Name), gorm.ErrRecordNotFound) {
@@ -43,7 +41,6 @@ func (s *PermissionService) Search(dto *system2.SearchPermission) (err error, li
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system2.SysPermission{})
-	var menus []system2.SysPermission
 
 	if dto.SysMenuId != 0 {
 		db = db.Where("sys_menu_id = ?", dto.SysMenuId)
@@ -54,7 +51,7 @@ func (s *PermissionService) Search(dto *system2.SearchPermission) (err error, li
 
 	err = db.Count(&total).Error
 	if err != nil {
-		return err, menus, total
+		return
 	}
 	db = db.Limit(limit).Offset(offset)
 
@@ -64,7 +61,7 @@ func (s *PermissionService) Search(dto *system2.SearchPermission) (err error, li
 	}
 
 	err = db.Order(oc).Find(&list).Error
-	return err, list, total
+	return
 }
 
 // CheckRepeat 检查 页面下的按钮 是否存在

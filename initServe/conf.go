@@ -12,7 +12,7 @@ func InitConfig() *viper.Viper {
 	temp := viper.New()
 	temp.SetConfigFile(utils.ConfigPath)
 	if err := temp.ReadInConfig(); err != nil {
-		fmt.Println("读取配置文件")
+		fmt.Println("读取配置文件错误", err)
 	}
 	env := temp.GetString("env")
 

@@ -11,8 +11,6 @@ import (
 
 type UserService struct{}
 
-var AppUserService = new(UserService)
-
 // Register 注册用户
 func (s *UserService) Register(dto *system.SysUser) (err error) {
 	if errors.Is(s.CheckRepeat(dto.LoginName), gorm.ErrRecordNotFound) {
@@ -78,7 +76,6 @@ func (s *UserService) Search(dto system.SearchUser) (err error, list []system.Sy
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system.SysUser{})
-	var menus []system.SysUser
 
 	if dto.Username != "" {
 		db = db.Where("username like ?", "%"+dto.Username+"%")
@@ -89,7 +86,7 @@ func (s *UserService) Search(dto system.SearchUser) (err error, list []system.Sy
 
 	err = db.Count(&total).Error
 	if err != nil {
-		return err, menus, total
+		return
 	}
 	db = db.Limit(limit).Offset(offset)
 
@@ -98,7 +95,7 @@ func (s *UserService) Search(dto system.SearchUser) (err error, list []system.Sy
 		Desc:   dto.Desc,
 	}
 	err = db.Preload(clause.Associations).Order(oc).Find(&list).Error
-	return err, list, total
+	return
 }
 
 // CheckRepeat 检查 账号 是否存在

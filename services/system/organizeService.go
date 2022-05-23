@@ -11,8 +11,6 @@ import (
 
 type OrganizeService struct{}
 
-var AppOrganizeService = new(OrganizeService)
-
 // Register 注册组织
 func (s *OrganizeService) Register(dto *system2.SysOrganize) (err error) {
 	if errors.Is(s.CheckRepeat(dto.Pid, dto.Name), gorm.ErrRecordNotFound) {
@@ -43,28 +41,29 @@ func (s *OrganizeService) Search(dto *system2.SearchOrganize) (err error, list [
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system2.SysOrganize{})
-	var menus []system2.SysOrganize
 
-	if dto.Pid != 0 {
-		db = db.Where("pid = ?", dto.Pid)
-	}
 	if dto.Name != "" {
 		db = db.Where("name like ?", "%"+dto.Name+"%")
 	}
 
 	err = db.Count(&total).Error
+	db = db.Where("pid = 0")
 	if err != nil {
-		return err, menus, total
+		return
 	}
 	db = db.Limit(limit).Offset(offset)
-
 	oc := clause.OrderByColumn{
 		Column: clause.Column{Name: "sort", Raw: true},
 		Desc:   dto.Desc,
 	}
 
+	for i := 0; i < len(list); i++ {
+		_, list := s.GetByPid(list[i].ID)
+		list[i].Children = list
+	}
+
 	err = db.Order(oc).Find(&list).Error
-	return err, list, total
+	return
 }
 
 // CheckRepeat 检查 pid 和 name 是否存在
@@ -88,6 +87,12 @@ func (s *OrganizeService) GetAll() (err error, dos []system2.SysOrganize) {
 // GetById 根据 id 查组织
 func (s *OrganizeService) GetById(id int) (err error, do system2.SysOrganize) {
 	err = global.Db.First(&do, id).Error
+	return
+}
+
+// GetByPid 根据 pid 查组织
+func (s *OrganizeService) GetByPid(id int) (err error, dos []system2.SysOrganize) {
+	err = global.Db.Where("pid = ?", id).Find(&dos).Error
 	return
 }
 

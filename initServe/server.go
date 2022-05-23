@@ -25,7 +25,8 @@ func RunWindowServer() {
 	}
 	// 私有路由
 	//router.Use(middleware.Auth())
-	router.Use(middleware.LogToFile()).Use(middleware.Cors()).Use(gin.Recovery())
+	router.Use(middleware.Cors())
+	router.Use(middleware.LogToFile()).Use(gin.Recovery())
 	privateGroup := router.Group("")
 	sysRouter := Router.AppRouter.System
 	sysRouter.InitUserRouter(privateGroup)     // 用户路由

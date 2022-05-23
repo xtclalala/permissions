@@ -19,7 +19,6 @@ func InitDb() *gorm.DB {
 		dbConfig.Host,
 		dbConfig.Port,
 		dbConfig.DbName)
-
 	mysqlConfig := mysql.Config{
 		DSN:                       dsn,
 		DefaultStringSize:         255,

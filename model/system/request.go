@@ -94,6 +94,7 @@ type PermissionId struct {
 type PermissionBaseInfo struct {
 	PermissionId
 	Name      string `json:"name"      validate:"required" label:"按钮名称"`
+	Code      string `json:"code"      validate:"required" label:"按钮编码"`
 	Sort      int    `json:"sort" validate:"required" label:"排序"`
 	SysMenuId int    `json:"menuId"    validate:"required" label:"菜单id"`
 }
@@ -105,7 +106,6 @@ type PermissionPerInfo struct {
 
 type SearchMenu struct {
 	common.BasePage
-	Pid       int    `form:"pid"`
 	Path      string `form:"path"`
 	Name      string `form:"name"`
 	Title     string `form:"title"`

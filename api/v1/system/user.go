@@ -18,9 +18,9 @@ func (a *UserApi) CreateUser(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils.Validate(&data)
-	if code == utils.ERROR {
-		common.FailWithMessage(msg.Error(), c)
+	err := utils.Validate(&data)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
 		return
 	}
 	var roles []system.SysRole
@@ -51,9 +51,9 @@ func (a *UserApi) UpdateUserBaseInfo(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils.Validate(&data)
-	if code == utils.ERROR {
-		common.FailWithMessage(msg.Error(), c)
+	err := utils.Validate(&data)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
 		return
 	}
 	if err := userService.UpdateUserInfo(system.SysUser{
@@ -77,9 +77,9 @@ func (a *UserApi) UpdateUserPerInfo(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils.Validate(&data)
-	if code == utils.ERROR {
-		common.FailWithMessage(msg.Error(), c)
+	err := utils.Validate(&data)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
 		return
 	}
 	if err := userService.SetUserRoleAndOrg(data.Id, data.SysRoleIds, data.SysOrganizeIds); err != nil {
@@ -96,9 +96,9 @@ func (a *UserApi) Login(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils.Validate(&data)
-	if code == utils.ERROR {
-		common.FailWithMessage(msg.Error(), c)
+	err := utils.Validate(&data)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
 		return
 	}
 	err, user := userService.GetUserByLoginName(data.LoginName)
@@ -184,9 +184,9 @@ func (a *UserApi) SearchUsers(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils.Validate(&data)
-	if code == utils.ERROR {
-		common.FailWithMessage(msg.Error(), c)
+	err := utils.Validate(&data)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
 		return
 	}
 	err, list, total := userService.Search(data)
@@ -207,9 +207,9 @@ func (a *UserApi) CompleteInfo(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils.Validate(&data)
-	if code == utils.ERROR {
-		common.FailWithMessage(msg.Error(), c)
+	err := utils.Validate(&data)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
 		return
 	}
 	err, user := userService.GetCompleteInfoById(data.Id)
@@ -227,9 +227,9 @@ func (a *UserApi) DeleteUser(c *gin.Context) {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-	msg, code := utils.Validate(&data)
-	if code == utils.ERROR {
-		common.FailWithMessage(msg.Error(), c)
+	err := utils.Validate(&data)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
 		return
 	}
 	if err := userService.Delete(data.Id); err != nil {

@@ -60,7 +60,7 @@ func (s *MenuService) Search(dto system2.SearchMenu) (err error, menus []system2
 	err = db.Count(&total).Error
 	db = db.Where("pid = 0")
 	if err != nil {
-		return err, menus, total
+		return
 	}
 	db = db.Limit(limit).Offset(offset)
 
@@ -74,7 +74,7 @@ func (s *MenuService) Search(dto system2.SearchMenu) (err error, menus []system2
 		_, list := s.GetByPid(menus[i].ID)
 		menus[i].Children = list
 	}
-	return err, menus, total
+	return
 }
 
 // CheckRepeat 检查path 或 name 是否存在

@@ -11,8 +11,6 @@ import (
 
 type RoleService struct{}
 
-var AppRoleService = new(RoleService)
-
 // Register 注册角色
 func (s *RoleService) Register(dto system2.SysRole) (err error) {
 	if errors.Is(s.CheckRepeat(dto.Pid, dto.Name), gorm.ErrRecordNotFound) {
@@ -83,18 +81,14 @@ func (s *RoleService) Search(dto system2.SearchRole) (err error, list []system2.
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system2.SysRole{})
-	var menus []system2.SysRole
 
-	if dto.Pid != 0 {
-		db = db.Where("pid = ?", dto.Pid)
-	}
 	if dto.Name != "" {
 		db = db.Where("name like ?", "%"+dto.Name+"%")
 	}
-
 	err = db.Count(&total).Error
+	db = db.Where("pid = 0")
 	if err != nil {
-		return err, menus, total
+		return
 	}
 	db = db.Limit(limit).Offset(offset)
 
@@ -104,7 +98,7 @@ func (s *RoleService) Search(dto system2.SearchRole) (err error, list []system2.
 	}
 
 	err = db.Order(oc).Find(&list).Error
-	return err, list, total
+	return
 }
 
 // CheckRepeat 检查 pid 和 名称 是否存在
