@@ -60,7 +60,7 @@ func (a *PermissionApi) UpdatePerBaseInfo(c *gin.Context) {
 // PermissionAllByMenuId 返回页面所有按钮
 func (a *PermissionApi) PermissionAllByMenuId(c *gin.Context) {
 	var data system.MenuId
-	if err := c.ShouldBindJSON(&data); err != nil {
+	if err := c.ShouldBind(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
