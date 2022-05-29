@@ -57,8 +57,8 @@ func (s *MenuService) Search(dto system2.SearchMenu) (err error, menus []system2
 		db = db.Where("hidden = ?", dto.Hidden)
 	}
 
-	err = db.Count(&total).Error
 	db = db.Where("pid = 0")
+	err = db.Count(&total).Error
 	if err != nil {
 		return
 	}
