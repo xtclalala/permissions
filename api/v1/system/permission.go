@@ -48,6 +48,7 @@ func (a *PermissionApi) UpdatePerBaseInfo(c *gin.Context) {
 			ID: data.Id,
 		},
 		Name:      data.Name,
+		Code:      data.Code,
 		Sort:      data.Sort,
 		SysMenuId: data.SysMenuId,
 	}); err != nil {
