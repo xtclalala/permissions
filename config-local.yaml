@@ -1,0 +1,18 @@
+app:
+  port: ':33333'
+  auth: 'y1t-gov'
+db:
+  type: 'mysql'
+  host: 'localhost'
+  port: '3306'
+  user: 'root'
+  passwd: 'root'
+  dbName: 'y1t_gov'
+logger:
+  fileName: 'permissions.log'
+  filePath: 'log'
+jwt:
+  signKey: 'y1t'
+  timeout: '10'
+  iss: 'y1t'
+  bufferTime: '5'

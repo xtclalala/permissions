@@ -22,6 +22,7 @@ func (a *OrganizeApi) Register(c *gin.Context) {
 	}
 	if err := organizeService.Register(&system.SysOrganize{
 		Name: data.Name,
+		Code: data.Code,
 		Pid:  data.Pid,
 		Sort: data.Sort,
 	}); err != nil {
@@ -48,6 +49,7 @@ func (a *OrganizeApi) UpdateOrgBaseInfo(c *gin.Context) {
 			ID: data.Id,
 		},
 		Name: data.Name,
+		Code: data.Code,
 		Pid:  data.Pid,
 		Sort: data.Sort,
 	}); err != nil {

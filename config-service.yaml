@@ -3,7 +3,7 @@ app:
   auth: 'y1t-gov'
 db:
   type: 'mysql'
-  host: 'localhost'
+  host: '116.205.231.179'
   port: '3306'
   user: 'user'
   passwd: '123456'

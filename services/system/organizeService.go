@@ -37,7 +37,7 @@ func (s *OrganizeService) Update(dto *system2.SysOrganize) (err error) {
 }
 
 // Search 搜索组织
-func (s *OrganizeService) Search(dto *system2.SearchOrganize) (err error, list []system2.SysOrganize, total int64) {
+func (s *OrganizeService) Search(dto *system2.SearchOrganize) (err error, orgs []system2.SysOrganize, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
 	db := global.Db.Model(&system2.SysOrganize{})
@@ -45,9 +45,8 @@ func (s *OrganizeService) Search(dto *system2.SearchOrganize) (err error, list [
 	if dto.Name != "" {
 		db = db.Where("name like ?", "%"+dto.Name+"%")
 	}
-
-	err = db.Count(&total).Error
 	db = db.Where("pid = 0")
+	err = db.Count(&total).Error
 	if err != nil {
 		return
 	}
@@ -56,13 +55,12 @@ func (s *OrganizeService) Search(dto *system2.SearchOrganize) (err error, list [
 		Column: clause.Column{Name: "sort", Raw: true},
 		Desc:   dto.Desc,
 	}
+	err = db.Order(oc).Find(&orgs).Error
 
-	for i := 0; i < len(list); i++ {
-		_, list := s.GetByPid(list[i].ID)
-		list[i].Children = list
+	for i := 0; i < len(orgs); i++ {
+		_, list := s.GetByPid(orgs[i].ID)
+		orgs[i].Children = list
 	}
-
-	err = db.Order(oc).Find(&list).Error
 	return
 }
 

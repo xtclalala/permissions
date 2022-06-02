@@ -142,6 +142,7 @@ type MenuPerInfo struct {
 type SearchOrganize struct {
 	common.BasePage
 	Name string `json:"name"`
+	Code string `json:"code"`
 	Sort int    `json:"sort"`
 	Pid  int    `json:"pid"`
 }
@@ -156,7 +157,8 @@ type OrganizeId struct {
 
 type OrganizeBaseInfo struct {
 	OrganizeId
-	Name string `json:"name" validate:"required,min=6,max=50" label:"组织名称"`
-	Sort int    `json:"sort" validate:"required" label:"排序"`
-	Pid  int    `json:"pid"`
+	Name string `form:"name" json:"name" validate:"required,min=6,max=50" label:"组织名称"`
+	Code string `form:"code" json:"code" validate:"required,min=1,max=10" label:"组织编号"`
+	Sort int    `form:"sort" json:"sort" validate:"required" label:"排序"`
+	Pid  int    `form:"pid"  json:"pid"`
 }
