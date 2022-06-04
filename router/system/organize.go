@@ -15,5 +15,6 @@ func (r *OrganizeRouter) InitOrganizeRouter(router *gin.RouterGroup) {
 		userRouter.PUT("organize", organizeApi.UpdateOrgBaseInfo)
 		userRouter.GET("organize", organizeApi.SearchOrganize)
 		userRouter.DELETE("organize", organizeApi.DeleteOrganize)
+		userRouter.GET("organize/select", organizeApi.AllOrganizes)
 	}
 }

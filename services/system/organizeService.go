@@ -88,6 +88,12 @@ func (s *OrganizeService) GetById(id int) (err error, do system2.SysOrganize) {
 	return
 }
 
+// GetByName 根据 name 查组织
+func (s *OrganizeService) GetByName(name string) (err error, dos []system2.SysOrganize) {
+	err = global.Db.Where("name like ?", "%"+name+"%").Find(&dos).Error
+	return
+}
+
 // GetByPid 根据 pid 查组织
 func (s *OrganizeService) GetByPid(id int) (err error, dos []system2.SysOrganize) {
 	err = global.Db.Where("pid = ?", id).Find(&dos).Error

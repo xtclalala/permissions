@@ -101,3 +101,10 @@ func (a *OrganizeApi) DeleteOrganize(c *gin.Context) {
 	}
 	common.Ok(c)
 }
+
+// AllOrganizes 所有组织
+func (a OrganizeApi) AllOrganizes(c *gin.Context) {
+	name := c.DefaultQuery("name", "")
+	_, data := organizeService.GetByName(name)
+	common.OkWithData(data, c)
+}

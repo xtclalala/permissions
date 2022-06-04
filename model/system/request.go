@@ -47,8 +47,8 @@ type UserId struct {
 
 type SearchRole struct {
 	common.BasePage
-	Name string `json:"name"`
-	Pid  int    `json:"pid"`
+	Name       string `form:"name" json:"name"`
+	OrganizeId int    `form:"orgId" json:"orgId"`
 }
 
 type Role struct {
@@ -58,21 +58,21 @@ type Role struct {
 }
 
 type RoleId struct {
-	Id int `json:"id" validate:"-" label:"身份主键"`
+	Id int `form:"id" json:"id" validate:"-" label:"身份主键"`
 }
 
 type RoleBaseInfo struct {
 	RoleId
-	Name          string `json:"name"        validate:"max=15,min=6,required" label:"角色名"`
-	Sort          int    `json:"sort"        validate:"required"              label:"排序"`
-	SysOrganizeId int    `json:"orgId"       validate:"required"              label:"组织"`
-	Pid           int    `json:"pid"`
+	Name          string `form:"name" json:"name"        validate:"max=15,min=6,required" label:"角色名"`
+	Code          string `form:"code" json:"code"        validate:"max=15,min=1,required" label:"角色编号"`
+	Sort          int    `form:"sort" json:"sort"        validate:"required"              label:"排序"`
+	SysOrganizeId int    `form:"orgId" json:"orgId"       validate:"required"              label:"组织"`
 }
 
 type RolePerInfo struct {
 	RoleId
-	SysMenuIds       []int `json:"menuIds"`
-	SysPermissionIds []int `json:"permissions"`
+	SysMenuIds       []int `form:"menuIds"     json:"menuIds"`
+	SysPermissionIds []int `form:"permissions" json:"permissions"`
 }
 
 type SearchPermission struct {
@@ -141,10 +141,7 @@ type MenuPerInfo struct {
 
 type SearchOrganize struct {
 	common.BasePage
-	Name string `json:"name"`
-	Code string `json:"code"`
-	Sort int    `json:"sort"`
-	Pid  int    `json:"pid"`
+	Name string `form:"name" json:"name"`
 }
 
 type Organize struct {

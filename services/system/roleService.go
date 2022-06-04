@@ -13,7 +13,7 @@ type RoleService struct{}
 
 // Register 注册角色
 func (s *RoleService) Register(dto system2.SysRole) (err error) {
-	if errors.Is(s.CheckRepeat(dto.Pid, dto.Name), gorm.ErrRecordNotFound) {
+	if errors.Is(s.CheckRepeat(dto.Name), gorm.ErrRecordNotFound) {
 		return errors.New("已被注册")
 	}
 	err = global.Db.Create(&dto).Error
@@ -27,8 +27,8 @@ func (s *RoleService) UpdateRoleInfo(dto system2.SysRole) (err error) {
 	if err != nil {
 		return errors.New("主键查找错误")
 	}
-	if old.Pid != dto.Pid || old.Name != dto.Name {
-		if errors.Is(s.CheckRepeat(dto.Pid, dto.Name), gorm.ErrRecordNotFound) {
+	if old.Name != dto.Name {
+		if errors.Is(s.CheckRepeat(dto.Name), gorm.ErrRecordNotFound) {
 			return errors.New("已被注册")
 		}
 	}
@@ -80,13 +80,16 @@ func (s *RoleService) SetRolePer(roleId int, perIds []int) (err error) {
 func (s *RoleService) Search(dto system2.SearchRole) (err error, list []system2.SysRole, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
-	db := global.Db.Model(&system2.SysRole{})
+	db := global.Db.Model(&system2.SysRole{}).Preload("SysOrganize")
 
 	if dto.Name != "" {
 		db = db.Where("name like ?", "%"+dto.Name+"%")
 	}
+	if dto.OrganizeId != 0 {
+		db = db.Where("sys_organize_id = ?", dto.OrganizeId)
+	}
+
 	err = db.Count(&total).Error
-	db = db.Where("pid = 0")
 	if err != nil {
 		return
 	}
@@ -102,9 +105,9 @@ func (s *RoleService) Search(dto system2.SearchRole) (err error, list []system2.
 }
 
 // CheckRepeat 检查 pid 和 名称 是否存在
-func (s *RoleService) CheckRepeat(pid int, name string) (err error) {
+func (s *RoleService) CheckRepeat(name string) (err error) {
 	var total int64
-	global.Db.Model(&system2.SysRole{}).Where(&system2.SysRole{Name: name, Pid: pid}).Count(&total)
+	global.Db.Model(&system2.SysRole{}).Where(&system2.SysRole{Name: name}).Count(&total)
 	if total != 0 {
 		err = gorm.ErrRecordNotFound
 	} else {
@@ -127,7 +130,7 @@ func (s *RoleService) GetById(id int) (err error, do system2.SysRole) {
 
 // GetCompleteInfoById 根据 id 查角色
 func (s *RoleService) GetCompleteInfoById(id int) (err error, do system2.SysRole) {
-	err = global.Db.Preload("SysMenus").Preload("SysPermissions").First(&do, id).Error
+	err = global.Db.Preload("SysMenus").Preload("SysPermissions").Preload("SysOrganize").First(&do, id).Error
 	return
 }
 

@@ -11,7 +11,7 @@ type RoleApi struct{}
 
 // CreateRole 创建角色
 func (a *RoleApi) CreateRole(c *gin.Context) {
-	var data system.Role
+	var data system.RoleBaseInfo
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
@@ -21,15 +21,19 @@ func (a *RoleApi) CreateRole(c *gin.Context) {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
-	menus := menuService.Ids2Object(data.SysMenuIds)
-	pers := permissionService.Ids2Object(data.SysPermissionIds)
+	//menus := menuService.Ids2Object(data.SysMenuIds)
+	//pers := permissionService.Ids2Object(data.SysPermissionIds)
 	if err := roleService.Register(system.SysRole{
-		Name:           data.Name,
-		Pid:            data.Pid,
-		Sort:           data.Sort,
-		SysOrganizeId:  data.SysOrganizeId,
-		SysMenus:       menus,
-		SysPermissions: pers,
+		Name: data.Name,
+		Code: data.Code,
+		Sort: data.Sort,
+		SysOrganize: system.SysOrganize{
+			BaseID: system.BaseID{
+				ID: data.SysOrganizeId,
+			},
+		},
+		//SysMenus:       menus,
+		//SysPermissions: pers,
 	}); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
@@ -50,10 +54,11 @@ func (a *RoleApi) UpdateBaseRole(c *gin.Context) {
 		return
 	}
 	if err := roleService.UpdateRoleInfo(system.SysRole{
-		BaseID: system.BaseID{ID: data.Id},
-		Name:   data.Name,
-		Pid:    data.Pid,
-		Sort:   data.Sort,
+		BaseID:        system.BaseID{ID: data.Id},
+		Name:          data.Name,
+		Code:          data.Code,
+		Sort:          data.Sort,
+		SysOrganizeId: data.SysOrganizeId,
 	}); err != nil {
 		common.FailWhitStatus(utils.UpdateRoleError, c)
 		return
@@ -118,9 +123,9 @@ func (a *RoleApi) CopyRole(c *gin.Context) {
 	}
 	if err = roleService.Register(system.SysRole{
 		Name:           role.Name + " Copy",
-		Pid:            role.Pid,
+		Code:           role.Code + "Copy",
 		Sort:           role.Sort,
-		SysOrganizeId:  role.SysOrganizeId,
+		SysOrganize:    role.SysOrganize,
 		SysMenus:       role.SysMenus,
 		SysPermissions: role.SysPermissions,
 	}); err != nil {
