@@ -72,7 +72,7 @@ type RoleBaseInfo struct {
 type RolePerInfo struct {
 	RoleId
 	SysMenuIds       []int `form:"menuIds"     json:"menuIds"`
-	SysPermissionIds []int `form:"permissions" json:"permissions"`
+	SysPermissionIds []int `form:"permissionIds" json:"permissionIds"`
 }
 
 type SearchPermission struct {

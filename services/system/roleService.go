@@ -134,6 +134,18 @@ func (s *RoleService) GetCompleteInfoById(id int) (err error, do system2.SysRole
 	return
 }
 
+// GetMenusById 根据 id 查菜单
+func (s *RoleService) GetMenusById(id int) (err error, do system2.SysRole) {
+	err = global.Db.Preload("SysMenus").Find(&do, id).Error
+	return
+}
+
+// GetPermissionsById 根据 id 查按钮
+func (s *RoleService) GetPermissionsById(id int) (err error, do system2.SysRole) {
+	err = global.Db.Preload("SysPermissions").Find(&do, id).Error
+	return
+}
+
 // GetRoleByUserId 根据 用户id 查角色
 func (s *RoleService) GetRoleByUserId(userId uuid.UUID) (err error, roles []system2.SysRole) {
 	rows, err := global.Db.Model(&system2.M2mUserRole{}).Where(&system2.M2mUserRole{SysUserId: userId}).Rows()

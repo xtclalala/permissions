@@ -21,8 +21,6 @@ func (a *RoleApi) CreateRole(c *gin.Context) {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
-	//menus := menuService.Ids2Object(data.SysMenuIds)
-	//pers := permissionService.Ids2Object(data.SysPermissionIds)
 	if err := roleService.Register(system.SysRole{
 		Name: data.Name,
 		Code: data.Code,
@@ -32,8 +30,6 @@ func (a *RoleApi) CreateRole(c *gin.Context) {
 				ID: data.SysOrganizeId,
 			},
 		},
-		//SysMenus:       menus,
-		//SysPermissions: pers,
 	}); err != nil {
 		common.FailWithMessage(err.Error(), c)
 		return
@@ -64,6 +60,37 @@ func (a *RoleApi) UpdateBaseRole(c *gin.Context) {
 		return
 	}
 	common.Ok(c)
+}
+
+// GetRoleMenus 角色菜单
+func (a RoleApi) GetRoleMenus(c *gin.Context) {
+	var data system.RoleId
+	if err := c.ShouldBindQuery(&data); err != nil {
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
+		return
+	}
+	err, vos := roleService.GetMenusById(data.Id)
+	if err != nil {
+		common.Fail(c)
+		return
+	}
+	common.OkWithData(vos.SysMenus, c)
+}
+
+// GetRolePer 角色权限
+func (a RoleApi) GetRolePer(c *gin.Context) {
+	var data system.RoleId
+	if err := c.ShouldBindQuery(&data); err != nil {
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
+		return
+	}
+
+	err, vos := roleService.GetPermissionsById(data.Id)
+	if err != nil {
+		common.Fail(c)
+		return
+	}
+	common.OkWithData(vos.SysPermissions, c)
 }
 
 // UpdateRoleMenus 更新角色菜单
@@ -125,6 +152,7 @@ func (a *RoleApi) CopyRole(c *gin.Context) {
 		Name:           role.Name + " Copy",
 		Code:           role.Code + "Copy",
 		Sort:           role.Sort,
+		SysOrganizeId:  role.SysOrganizeId,
 		SysOrganize:    role.SysOrganize,
 		SysMenus:       role.SysMenus,
 		SysPermissions: role.SysPermissions,
@@ -153,7 +181,7 @@ func (a RoleApi) CompleteRole(c *gin.Context) {
 // DeleteRole 删除角色
 func (a *RoleApi) DeleteRole(c *gin.Context) {
 	var data system.RoleId
-	if err := c.ShouldBindQuery(&data); err != nil {
+	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}

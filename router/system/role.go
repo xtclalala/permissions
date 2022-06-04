@@ -14,6 +14,8 @@ func (r *RoleRouter) InitRoleRouter(router *gin.RouterGroup) {
 	{
 		userRouter.POST("role", roleApi.CreateRole)
 		userRouter.PUT("role", roleApi.UpdateBaseRole)
+		userRouter.GET("menus", roleApi.GetRoleMenus)
+		userRouter.GET("per", roleApi.GetRolePer)
 		userRouter.POST("menus", roleApi.UpdateRoleMenus)
 		userRouter.POST("per", roleApi.UpdateRolePer)
 		userRouter.POST("copyRole", roleApi.CopyRole)
