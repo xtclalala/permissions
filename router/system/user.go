@@ -12,11 +12,11 @@ func (r *UserRouter) InitUserRouter(router *gin.RouterGroup) {
 	var userApi = v1.ApiGroupApp.SysApiGroup.UserApi
 	{
 		userRouter.POST("user", userApi.CreateUser)
-		userRouter.PUT("baseInfo", userApi.UpdateUserBaseInfo)
-		userRouter.PUT("perInfo", userApi.UpdateUserPerInfo)
+		userRouter.PUT("user", userApi.UpdateUserBaseInfo)
+		userRouter.PUT("per", userApi.UpdateUserPerInfo)
 		userRouter.GET("routerAndRole", userApi.GetUserRouterAndRoles)
-		userRouter.GET("SearchUsers", userApi.SearchUsers)
-		userRouter.GET("user", userApi.CompleteInfo)
+		userRouter.GET("user", userApi.SearchUsers)
+		userRouter.GET("completeInfo", userApi.CompleteInfo)
 		userRouter.DELETE("user", userApi.DeleteUser)
 
 	}

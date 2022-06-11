@@ -8,10 +8,10 @@ import (
 // SearchUser 分页显示 搜索后的用户
 type SearchUser struct {
 	common.BasePage
-	SysRoleIds     []int  `json:"roleIds"`
-	SysOrganizeIds []int  `json:"orgIds"`
-	Username       string `json:"name"`
-	LoginName      string `json:"username"`
+	SysRoleId     int    `json:"roleId"`
+	SysOrganizeId int    `json:"orgId"`
+	Username      string `json:"name"`
+	LoginName     string `json:"username"`
 }
 
 // User 创建用户

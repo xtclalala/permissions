@@ -83,6 +83,16 @@ func (s *UserService) Search(dto system.SearchUser) (err error, list []system.Sy
 	if dto.LoginName != "" {
 		db = db.Where("login_name like ?", "%"+dto.LoginName+"%")
 	}
+	if dto.SysOrganizeId != 0 {
+		db = db.Joins("SysOrganizes", db.Where(&system.SysOrganize{BaseID: system.BaseID{
+			ID: dto.SysOrganizeId,
+		}}))
+	}
+	if dto.SysRoleId != 0 {
+		db = db.Joins("SysRoles", db.Where(&system.SysRole{BaseID: system.BaseID{
+			ID: dto.SysOrganizeId,
+		}}))
+	}
 
 	err = db.Count(&total).Error
 	if err != nil {
@@ -94,7 +104,8 @@ func (s *UserService) Search(dto system.SearchUser) (err error, list []system.Sy
 		Column: clause.Column{Name: "create_time", Raw: true},
 		Desc:   dto.Desc,
 	}
-	err = db.Preload(clause.Associations).Order(oc).Find(&list).Error
+	//err = db.Preload(clause.Associations).Select([]string{"username", "id", "LoginName"}).Order(oc).Find(&list).Error
+	err = db.Preload(clause.Associations).Omit("password").Order(oc).Find(&list).Error
 	return
 }
 
