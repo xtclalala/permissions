@@ -49,6 +49,9 @@ func (s *RoleService) SetRoleMenu(roleId int, menuIds []int) error {
 				SysMenuId: menuId,
 			})
 		}
+		if len(menuIds) == 0 {
+			return nil
+		}
 		if err := tx.Create(&roleMenus).Error; err != nil {
 			return err
 		}
@@ -59,7 +62,7 @@ func (s *RoleService) SetRoleMenu(roleId int, menuIds []int) error {
 // SetRolePer 修改角色权限 按钮
 func (s *RoleService) SetRolePer(roleId int, perIds []int) (err error) {
 	return global.Db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&system2.M2mRolePermission{}, "sys_role_id = ?", roleId).Error; err != nil {
+		if err = tx.Delete(&system2.M2mRolePermission{}, "sys_role_id = ?", roleId).Error; err != nil {
 			return err
 		}
 		var rolePers []system2.M2mRolePermission
@@ -69,7 +72,10 @@ func (s *RoleService) SetRolePer(roleId int, perIds []int) (err error) {
 				SysPermissionId: perId,
 			})
 		}
-		if err := tx.Create(&rolePers).Error; err != nil {
+		if len(perIds) == 0 {
+			return nil
+		}
+		if err = tx.Create(&rolePers).Error; err != nil {
 			return err
 		}
 		return nil
@@ -100,7 +106,7 @@ func (s *RoleService) Search(dto system2.SearchRole) (err error, list []system2.
 		Desc:   dto.Desc,
 	}
 
-	err = db.Order(oc).Find(&list).Error
+	err = db.Preload("SysMenus").Preload("SysPermissions").Order(oc).Find(&list).Error
 	return
 }
 

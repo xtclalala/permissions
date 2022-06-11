@@ -91,7 +91,7 @@ func (s *MenuService) CheckRepeat(path, name string) (err error) {
 
 // GetAll 查所有页面
 func (s *MenuService) GetAll() (err error, dos []system2.SysMenu) {
-	err = global.Db.Find(&dos).Error
+	err = global.Db.Preload("SysPermissions").Find(&dos).Error
 	return
 }
 

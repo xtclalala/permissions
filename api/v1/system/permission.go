@@ -21,7 +21,7 @@ func (a *PermissionApi) Register(c *gin.Context) {
 		return
 	}
 	if err := permissionService.Register(&system.SysPermission{
-		Name:      data.Name,
+		Title:     data.Title,
 		Code:      data.Code,
 		Sort:      data.Sort,
 		SysMenuId: data.SysMenuId,
@@ -47,7 +47,7 @@ func (a *PermissionApi) UpdatePerBaseInfo(c *gin.Context) {
 		BaseID: system.BaseID{
 			ID: data.Id,
 		},
-		Name:      data.Name,
+		Title:     data.Title,
 		Code:      data.Code,
 		Sort:      data.Sort,
 		SysMenuId: data.SysMenuId,

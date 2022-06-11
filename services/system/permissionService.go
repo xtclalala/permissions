@@ -12,7 +12,7 @@ type PermissionService struct{}
 
 // Register 注册页面按钮
 func (s *PermissionService) Register(dto *system2.SysPermission) (err error) {
-	if errors.Is(s.CheckRepeat(dto.SysMenuId, dto.Name), gorm.ErrRecordNotFound) {
+	if errors.Is(s.CheckRepeat(dto.SysMenuId, dto.Title), gorm.ErrRecordNotFound) {
 		return errors.New("已被注册")
 	}
 	err = global.Db.Create(&dto).Error
@@ -26,8 +26,8 @@ func (s *PermissionService) Update(dto *system2.SysPermission) (err error) {
 	if err != nil {
 		return errors.New("主键查找错误")
 	}
-	if old.SysMenuId != dto.SysMenuId || old.Name != dto.Name {
-		if errors.Is(s.CheckRepeat(dto.SysMenuId, dto.Name), gorm.ErrRecordNotFound) {
+	if old.SysMenuId != dto.SysMenuId || old.Title != dto.Title {
+		if errors.Is(s.CheckRepeat(dto.SysMenuId, dto.Title), gorm.ErrRecordNotFound) {
 			return errors.New("已被注册")
 		}
 	}
@@ -45,8 +45,8 @@ func (s *PermissionService) Search(dto *system2.SearchPermission) (err error, li
 	if dto.SysMenuId != 0 {
 		db = db.Where("sys_menu_id = ?", dto.SysMenuId)
 	}
-	if dto.Name != "" {
-		db = db.Where("name like ?", "%"+dto.Name+"%")
+	if dto.Title != "" {
+		db = db.Where("name like ?", "%"+dto.Title+"%")
 	}
 
 	err = db.Count(&total).Error
@@ -65,9 +65,9 @@ func (s *PermissionService) Search(dto *system2.SearchPermission) (err error, li
 }
 
 // CheckRepeat 检查 页面下的按钮 是否存在
-func (s *PermissionService) CheckRepeat(menuId int, name string) (err error) {
+func (s *PermissionService) CheckRepeat(menuId int, title string) (err error) {
 	var total int64
-	global.Db.Model(&system2.SysPermission{}).Where(&system2.SysPermission{SysMenuId: menuId, Name: name}).Count(&total)
+	global.Db.Model(&system2.SysPermission{}).Where(&system2.SysPermission{SysMenuId: menuId, Title: title}).Count(&total)
 	if total != 0 {
 		err = gorm.ErrRecordNotFound
 	} else {

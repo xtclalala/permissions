@@ -77,7 +77,7 @@ type RolePerInfo struct {
 
 type SearchPermission struct {
 	common.BasePage
-	Name       string `form:"name" json:"name"      label:"按钮名称"`
+	Title      string `form:"title" json:"title"      label:"按钮名称"`
 	SysMenuId  int    `form:"menuId" json:"menuId"    label:"菜单id"`
 	SysRoleIds []int  `form:"sysRoleId" json:"sysRoleId" label:"角色id"`
 }
@@ -93,7 +93,7 @@ type PermissionId struct {
 
 type PermissionBaseInfo struct {
 	PermissionId
-	Name      string `json:"name"      validate:"required" label:"按钮名称"`
+	Title     string `json:"title"      validate:"required" label:"按钮名称"`
 	Code      string `json:"code"      validate:"required" label:"按钮编码"`
 	Sort      int    `json:"sort" validate:"required" label:"排序"`
 	SysMenuId int    `json:"menuId"    validate:"required" label:"菜单id"`
