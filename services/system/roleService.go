@@ -206,6 +206,12 @@ func (s *RoleService) GetRoleByOrgId(orgId int) (err error, roles []system2.SysR
 	return
 }
 
+// GetRoleByOrgIds 根据 组织ids 查角色
+func (s *RoleService) GetRoleByOrgIds(orgIds []string) (err error, roles []system2.SysRole) {
+	err = global.Db.Where("sys_organize_id in ?", orgIds).Find(&roles).Error
+	return
+}
+
 func (s *RoleService) DeleteRole(roleId int) (err error) {
 	err = global.Db.Delete(&system2.SysRole{}, roleId).Error
 	return

@@ -32,7 +32,18 @@ func (s *UserService) UpdateUserInfo(dto system.SysUser) (err error) {
 			return errors.New("已被注册")
 		}
 	}
+	dto.Password = old.Password
 	err = global.Db.Updates(&dto).Error
+	return
+}
+
+// ResetPassword 重置密码
+func (s *UserService) ResetPassword(id uuid.UUID) (err error) {
+	var old system.SysUser
+	err = global.Db.First(&old, id).Update("password", "123456@y1t").Error
+	if err != nil {
+		return err
+	}
 	return
 }
 
@@ -75,23 +86,32 @@ func (s *UserService) SetUserRoleAndOrg(userId uuid.UUID, roleIds []int, orgIds 
 func (s *UserService) Search(dto system.SearchUser) (err error, list []system.SysUser, total int64) {
 	limit := dto.PageSize
 	offset := dto.GetOffset()
+
 	db := global.Db.Model(&system.SysUser{})
 
+	if len(dto.SysOrganizeIds) != 0 {
+		var orgs []system.M2mUserOrganize
+		global.Db.Model(&system.M2mUserOrganize{}).Where("sys_organize_id in ?", dto.SysOrganizeIds).Find(&orgs)
+		var ids []uuid.UUID
+		for _, org := range orgs {
+			ids = append(ids, org.SysUserId)
+		}
+		db = db.Where("id in ?", ids)
+	}
+	if len(dto.SysRoleIds) != 0 {
+		var roles []system.M2mUserRole
+		global.Db.Model(&system.M2mUserRole{}).Where("sys_role_id in ?", dto.SysRoleIds).Find(&roles)
+		var ids []uuid.UUID
+		for _, role := range roles {
+			ids = append(ids, role.SysUserId)
+		}
+		db = db.Where("id in ?", ids)
+	}
 	if dto.Username != "" {
 		db = db.Where("username like ?", "%"+dto.Username+"%")
 	}
 	if dto.LoginName != "" {
 		db = db.Where("login_name like ?", "%"+dto.LoginName+"%")
-	}
-	if dto.SysOrganizeId != 0 {
-		db = db.Joins("SysOrganizes", db.Where(&system.SysOrganize{BaseID: system.BaseID{
-			ID: dto.SysOrganizeId,
-		}}))
-	}
-	if dto.SysRoleId != 0 {
-		db = db.Joins("SysRoles", db.Where(&system.SysRole{BaseID: system.BaseID{
-			ID: dto.SysOrganizeId,
-		}}))
 	}
 
 	err = db.Count(&total).Error
@@ -180,7 +200,17 @@ func (s *UserService) GetUserByLoginName(loginName string) (error, system.SysUse
 	return nil, user
 }
 
-func (s *UserService) Delete(userId uuid.UUID) (err error) {
-	err = global.Db.Delete(&system.SysUser{}, userId).Error
-	return
+func (s *UserService) Delete(userId uuid.UUID) error {
+	return global.Db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where(&system.M2mUserRole{SysUserId: userId}).Delete(&system.M2mUserRole{}).Error; err != nil {
+			return err
+		}
+		if err := tx.Where(&system.M2mUserOrganize{SysUserId: userId}).Delete(&system.M2mUserOrganize{}).Error; err != nil {
+			return err
+		}
+		if err := tx.Delete(&system.SysUser{}, userId).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }

@@ -223,17 +223,12 @@ func (a *RoleApi) SearchRole(c *gin.Context) {
 
 // RoleAllByOrg 查找组织下的所有角色
 func (a *RoleApi) RoleAllByOrg(c *gin.Context) {
-	var data system.OrganizeId
-	if err := c.ShouldBindQuery(&data); err != nil {
+	data, ok := c.GetQueryArray("ids[]")
+	if ok != true {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
 	}
-
-	if err := utils.Validate(&data); err != nil {
-		common.FailWithMessage(err.Error(), c)
-		return
-	}
-	err, roles := roleService.GetRoleByOrgId(data.Id)
+	err, roles := roleService.GetRoleByOrgIds(data)
 	if err != nil {
 		common.FailWhitStatus(utils.FindRoleError, c)
 		return

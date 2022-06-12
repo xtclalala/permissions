@@ -34,7 +34,7 @@ func (a *UserApi) CreateUser(c *gin.Context) {
 	if err := userService.Register(&system.SysUser{
 		Username:     data.Username,
 		LoginName:    data.LoginName,
-		Password:     data.Password,
+		Password:     data.LoginName + "@y1t",
 		SysRoles:     roles,
 		SysOrganizes: orgs,
 	}); err != nil {
@@ -46,7 +46,7 @@ func (a *UserApi) CreateUser(c *gin.Context) {
 
 // UpdateUserBaseInfo 更新基本用户
 func (a *UserApi) UpdateUserBaseInfo(c *gin.Context) {
-	var data system.UserBaseInfo
+	var data system.User
 	if err := c.ShouldBindJSON(&data); err != nil {
 		common.FailWhitStatus(utils.ParamsResolveFault, c)
 		return
@@ -56,12 +56,15 @@ func (a *UserApi) UpdateUserBaseInfo(c *gin.Context) {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
+	if err := userService.SetUserRoleAndOrg(data.Id, data.SysRoleIds, data.SysOrganizeIds); err != nil {
+		common.FailWithMessage(err.Error(), c)
+		return
+	}
 	if err := userService.UpdateUserInfo(system.SysUser{
 		BaseUUID: system.BaseUUID{
 			ID: data.Id,
 		},
 		Username:  data.Username,
-		Password:  data.Password,
 		LoginName: data.LoginName,
 	}); err != nil {
 		common.FailWithMessage(err.Error(), c)
@@ -233,6 +236,24 @@ func (a *UserApi) DeleteUser(c *gin.Context) {
 		return
 	}
 	if err := userService.Delete(data.Id); err != nil {
+		common.FailWhitStatus(utils.DeleteUserError, c)
+		return
+	}
+	common.Ok(c)
+}
+
+// ResetPassword 重置密码
+func (a *UserApi) ResetPassword(c *gin.Context) {
+	var data system.UserId
+	if err := c.ShouldBindJSON(&data); err != nil {
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
+		return
+	}
+	if err := utils.Validate(&data); err != nil {
+		common.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := userService.ResetPassword(data.Id); err != nil {
 		common.FailWhitStatus(utils.DeleteUserError, c)
 		return
 	}

@@ -18,6 +18,7 @@ func (r *UserRouter) InitUserRouter(router *gin.RouterGroup) {
 		userRouter.GET("user", userApi.SearchUsers)
 		userRouter.GET("completeInfo", userApi.CompleteInfo)
 		userRouter.DELETE("user", userApi.DeleteUser)
+		userRouter.PUT("password", userApi.ResetPassword)
 
 	}
 }
