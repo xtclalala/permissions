@@ -9,8 +9,8 @@ import (
 type FileService struct{}
 
 // Register 注册文件
-func (s *FileService) Register(dto any) (err error) {
-	err = global.Db.Create(&dto).Error
+func (s *FileService) Register(dtos []*system.SysFile) (err error) {
+	err = global.Db.Create(&dtos).Error
 	return
 }
 

@@ -16,3 +16,5 @@ jwt:
   timeout: '10'
   iss: 'y1t'
   bufferTime: '5'
+file:
+  path: 'upload'

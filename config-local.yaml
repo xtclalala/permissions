@@ -3,10 +3,10 @@ app:
   auth: 'y1t-gov'
 db:
   type: 'mysql'
-  host: 'localhost'
+  host: '127.0.0.1'
   port: '3306'
-  user: 'root'
-  passwd: 'root'
+  user: 'user'
+  passwd: '123456'
   dbName: 'y1t_gov'
 logger:
   fileName: 'permissions.log'
@@ -16,3 +16,5 @@ jwt:
   timeout: '10'
   iss: 'y1t'
   bufferTime: '5'
+file:
+  path: 'upload'

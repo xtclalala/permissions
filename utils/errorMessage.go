@@ -41,6 +41,9 @@ var (
 	ClaimParseFailed  = 3005
 	TokenCreateFailed = 3006
 	NOTOKEN           = 3007
+
+	FileReadType = 4001
+	FileSave     = 4002
 )
 
 var codeMsg = map[int]string{
@@ -81,6 +84,9 @@ var codeMsg = map[int]string{
 	TokenNotValid:     "sys.token.notValid",
 	ClaimParseFailed:  "sys.claim.parseError",
 	TokenCreateFailed: "sys.token.createFailed",
+
+	FileReadType: "sys.file.read",
+	FileSave:     "sys.file.save",
 }
 
 func GetErrorMessage(code int) string {

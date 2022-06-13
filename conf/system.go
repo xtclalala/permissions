@@ -5,11 +5,16 @@ type Config struct {
 	Db     *Db     `mapstructure:"db"  yaml:"db"`
 	Logger *Logger `mapstructure:"logger"  yaml:"logger"`
 	Jwt    *Jwt    `mapstructure:"jwt"  yaml:"jwt"`
+	File   *File   `mapstructure:"file"  yaml:"file"`
 }
 
 type App struct {
 	Port string `mapstructure:"port" yaml:"port"`
 	Auth string `mapstructure:"auth" yaml:"auth"`
+}
+
+type File struct {
+	Path string `mapstructure:"path" yaml:"path"`
 }
 
 type Db struct {

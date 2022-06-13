@@ -1,9 +1,10 @@
 package utils
 
 const (
-	ConfigPath = "./config.yaml"
-	ConfigName = "./config"
-	ConfigType = "yaml"
-	Rung       = "-"
+	Slash      = "/"
 	Point      = "."
+	Rung       = "-"
+	ConfigType = "yaml"
+	ConfigName = Point + Slash + "config"
+	ConfigPath = ConfigName + Point + ConfigType
 )

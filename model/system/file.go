@@ -1,8 +1,8 @@
 package system
 
 type SysFile struct {
-	BaseID
+	BaseUUID
 	Name string `json:"name" gorm:"comment:文件名称;"`
 	Type string `json:"type" gorm:"comment:文件类型;"`
-	Path int64  `json:"path" gorm:"comment:文件存储路径;"`
+	Path string `json:"path" gorm:"comment:文件存储路径;"`
 }
