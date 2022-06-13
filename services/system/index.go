@@ -6,4 +6,5 @@ type SysServiceGroup struct {
 	PermissionService
 	RoleService
 	UserService
+	FileService
 }

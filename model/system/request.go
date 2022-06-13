@@ -5,6 +5,10 @@ import (
 	"permissions/model/common"
 )
 
+type File struct {
+	Id uuid.UUID `form:"id" json:"id" validate:"required"`
+}
+
 // SearchUser 分页显示 搜索后的用户
 type SearchUser struct {
 	common.BasePage
