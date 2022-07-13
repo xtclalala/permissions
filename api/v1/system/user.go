@@ -92,6 +92,25 @@ func (a *UserApi) UpdateUserPerInfo(c *gin.Context) {
 	common.Ok(c)
 }
 
+// UpdateUserPassword 修改密码
+func (a *UserApi) UpdateUserPassword(c *gin.Context) {
+	var data system.UserPassword
+	if err := c.ShouldBindJSON(&data); err != nil {
+		common.FailWhitStatus(utils.ParamsResolveFault, c)
+		return
+	}
+
+	if err := utils.Validate(&data); err != nil {
+		common.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := userService.ChangePassword(&data.Id, &data.NewPassword); err != nil {
+		common.Fail(c)
+		return
+	}
+	common.Ok(c)
+}
+
 // Login 登录
 func (a *UserApi) Login(c *gin.Context) {
 	var data system.UserLogin
@@ -139,37 +158,30 @@ func (a *UserApi) GetUserRouterAndRoles(c *gin.Context) {
 		common.FailWhitStatus(utils.FindOrgError, c)
 		return
 	}
-	roles := make([]system.SysRole, 0, 10)
-	for _, org := range orgs {
-		ok, sysRoles := roleService.GetRoleByOrgId(org.ID)
+	ok, roles := roleService.GetRoleByUserId(claim.Id)
+	if ok != nil {
+		common.FailWhitStatus(utils.FindRoleError, c)
+		return
+	}
+
+	for i, role := range roles {
+		pers := make([]system.SysPermission, 0, 50)
+		ok, SysPermissions := permissionService.GetPerByRoleId(role.ID)
 		if ok != nil {
-			common.FailWhitStatus(utils.FindRoleError, c)
+			common.FailWhitStatus(utils.FindPermissionError, c)
 			return
 		}
+		pers = append(pers, SysPermissions...)
+		roles[i].SysPermissions = pers
 
-		for i, role := range sysRoles {
-			pers := make([]system.SysPermission, 0, 50)
-			ok, SysPermissions := permissionService.GetPerByRoleId(role.ID)
-			if ok != nil {
-				common.FailWhitStatus(utils.FindPermissionError, c)
-				return
-			}
-			pers = append(pers, SysPermissions...)
-			sysRoles[i].SysPermissions = pers
+		menus := make([]system.SysMenu, 0, 30)
+		ok, sysMenus := menuService.GetMenuByRoleId(role.ID)
+		if ok != nil {
+			common.FailWhitStatus(utils.FindMenuError, c)
+			return
 		}
-
-		for i, role := range sysRoles {
-			menus := make([]system.SysMenu, 0, 30)
-			ok, sysMenus := menuService.GetMenuByRoleId(role.ID)
-			if ok != nil {
-				common.FailWhitStatus(utils.FindMenuError, c)
-				return
-			}
-			menus = append(menus, sysMenus...)
-			sysRoles[i].SysMenus = menus
-		}
-
-		roles = append(roles, sysRoles...)
+		menus = append(menus, sysMenus...)
+		roles[i].SysMenus = menus
 	}
 
 	data := map[string]any{

@@ -45,6 +45,14 @@ type UserLogin struct {
 	Password  string `json:"password"  validate:"-" label:"密码"`
 }
 
+// UserPassword 用户修改密码
+type UserPassword struct {
+	UserId
+	OldPassword      string `json:"oldPassword"  validate:"max=15,min=5,required" label:"旧密码"`
+	NewPassword      string `json:"newPassword"  validate:"max=15,min=5,required" label:"新密码"`
+	NewPasswordAgain string `json:"NewPasswordAgain"  validate:"max=15,min=5,required" label:"新密码"`
+}
+
 // UserId 用户id
 type UserId struct {
 	Id uuid.UUID `json:"id"        validate:"-"        label:"用户id"`

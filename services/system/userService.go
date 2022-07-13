@@ -47,6 +47,16 @@ func (s *UserService) ResetPassword(id uuid.UUID) (err error) {
 	return
 }
 
+// ChangePassword 修改密码
+func (s *UserService) ChangePassword(id *uuid.UUID, password *string) (err error) {
+	var old system.SysUser
+	err = global.Db.First(&old, id).Update("password", password).Error
+	if err != nil {
+		return err
+	}
+	return
+}
+
 // SetUserRoleAndOrg 设置用户权限 角色 组织
 func (s *UserService) SetUserRoleAndOrg(userId uuid.UUID, roleIds []int, orgIds []int) error {
 	return global.Db.Transaction(func(tx *gorm.DB) error {
