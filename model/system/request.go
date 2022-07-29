@@ -29,7 +29,7 @@ type User struct {
 type UserBaseInfo struct {
 	UserId
 	UserLogin
-	Username string `json:"name"  validate:"max=15,min=1,required" label:"用户名"`
+	Username string `json:"username"  validate:"max=15,min=1,required" label:"用户名"`
 }
 
 // UserPerInfo 用户权限信息
@@ -41,7 +41,7 @@ type UserPerInfo struct {
 
 // UserLogin 用户登录
 type UserLogin struct {
-	LoginName string `json:"username" validate:"max=15,min=5,required" label:"账号"`
+	LoginName string `json:"loginName" validate:"max=15,min=5,required" label:"账号"`
 	Password  string `json:"password"  validate:"-" label:"密码"`
 }
 
