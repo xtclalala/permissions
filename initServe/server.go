@@ -10,13 +10,6 @@ import (
 	"time"
 )
 
-//var upgrader = websocket.Upgrader{
-//	// 解决跨域问题
-//	CheckOrigin: func(r *http.Request) bool {
-//		return true
-//	},
-//}
-
 func RunWindowServer() {
 	appConfig := global.System.App
 	router := gin.New()
@@ -28,33 +21,10 @@ func RunWindowServer() {
 	publicGroup := router.Group("")
 	var userApi = v1.ApiGroupApp.SysApiGroup.UserApi
 	{
-		//publicGroup.GET("/ws/:documentId", func(c *gin.Context) {
-		//	docId := c.Param("documentId")
-		//	log.Print("docId:", docId)
-		//	ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
-		//	if err != nil {
-		//		log.Print("upgrade:", err)
-		//		return
-		//	}
-		//	defer ws.Close()
-		//	for {
-		//		mt, message, err := ws.ReadMessage()
-		//		if err != nil {
-		//			log.Println("read:", err)
-		//			break
-		//		}
-		//		log.Printf("recv: %s", message)
-		//		err = ws.WriteMessage(mt, message)
-		//		if err != nil {
-		//			log.Println("write:", err)
-		//			break
-		//		}
-		//	}
-		//})
 		publicGroup.POST("login", userApi.Login)
 	}
 	// 私有路由
-	//router.Use(middleware.Auth())
+	router.Use(middleware.Auth())
 	router.Use(middleware.Cors())
 	router.Use(middleware.LogToFile()).Use(gin.Recovery())
 	privateGroup := router.Group("")
