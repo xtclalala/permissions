@@ -7,6 +7,6 @@ type SysOrganize struct {
 	Pid  int    `json:"pid" gorm:"default:0;comment:父级id"`
 	Sort int    `json:"sort" gorm:"default:100;comment:排序"`
 	// m2m
-	SysUsers []SysUser     `json:"users" gorm:"many2many:m2m_user_organize"`
+	SysUsers []SysUser     `json:"users" gorm:"many2many:sys_m2m_user_organize"`
 	Children []SysOrganize `json:"children" gorm:"-"`
 }

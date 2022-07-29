@@ -8,5 +8,5 @@ type SysPermission struct {
 	// o2m
 	SysMenuId int `json:"menuId"`
 	// m2m
-	SysRoles []SysRole `json:"roles" gorm:"many2many:m2m_role_permission;"`
+	SysRoles []SysRole `json:"roles" gorm:"many2many:sys_m2m_role_permission;"`
 }

@@ -13,7 +13,7 @@ type SysMenu struct {
 	// o2m
 	SysPermissions []SysPermission `json:"permissions" gorm:"foreignKey:SysMenuId"`
 	// m2m
-	SysRoles []SysRole `json:"roles" gorm:"many2many:m2m_role_menu;"`
+	SysRoles []SysRole `json:"roles" gorm:"many2many:sys_m2m_role_menu;"`
 	Children []SysMenu `json:"children" gorm:"-"`
 }
 
